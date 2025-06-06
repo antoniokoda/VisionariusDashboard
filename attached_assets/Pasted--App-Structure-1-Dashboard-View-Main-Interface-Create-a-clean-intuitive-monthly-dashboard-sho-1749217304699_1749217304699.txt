@@ -1,0 +1,185 @@
+🧩 App Structure
+1. Dashboard View (Main Interface)
+ Create a clean, intuitive monthly dashboard showing the following sales KPIs:
+📊 Metrics to Display:
+Total Calls
+
+
+Total Discovery Calls
+
+
+First Discovery Call
+
+
+Second Discovery Call
+
+
+Third Discovery Call
+
+
+Total Closing Calls
+
+
+First Closing Call
+
+
+Second Closing Call
+
+
+Third Closing Call
+
+
+Proposals Created
+
+
+Proposals Pitched
+
+
+Closing Rate
+
+
+Cash Collected
+
+
+Show-Up Rates:
+
+
+First Discovery Call
+
+
+Second Discovery Call
+
+
+Third Discovery Call
+
+
+First Closing Call
+
+
+Second Closing Call
+
+
+Third Closing Call
+
+
+Funnel Movement Rates:
+
+
+From First Discovery Call to:
+
+
+Second Discovery Call
+
+
+First Closing Call
+
+
+Lost
+
+
+From Second Discovery Call to:
+
+
+Third Discovery Call
+
+
+First Closing Call
+
+
+Lost
+
+
+From Third Discovery Call to First Closing Call
+
+
+From First to Second Closing Call
+
+
+From Second to Third Closing Call
+
+
+From Any Closing Call to Lost
+
+
+From Third Closing Call to Won
+
+
+Time-Based Metrics:
+
+
+Avg. time from First Discovery Call to First Closing Call
+
+
+Avg. time from First Discovery Call to Close (Won/Lost)
+
+
+Avg. time between Discovery Calls
+
+
+Avg. time between Closing Calls
+
+
+Avg. Sales Cycle Duration
+
+
+Call Duration Averages:
+
+
+Discovery Calls
+
+
+Closing Calls
+
+
+Average Revenue per Client
+
+
+
+2. Input View (Per Client Entry)
+ One row per client, with editable fields for input.
+ Include the following elements:
+Client Name
+
+
+Date of each call (Discovery 1-3, Closing 1-3)
+
+
+Call outcome or stage progression
+
+
+Call Duration
+
+
+Link to Call Recording (one per call)
+
+
+Files (upload area or file URL storage)
+
+
+Proposal status (created/pitched)
+
+
+Revenue Collected
+
+
+Notes or Tags (optional)
+
+
+
+🔧 Functionality Requirements
+Data Entry Form: Simple, spreadsheet-style input layout.
+
+
+Automated Calculations: Backend logic to automatically calculate metrics from input data.
+
+
+Date Filters: Allow monthly filter on dashboard to view performance per time period.
+
+
+Storage: Include support for uploading/viewing external call recordings and documents per client.
+
+
+Usability First: Prioritize clarity, speed, and minimal input overhead for the team.
+
+
+

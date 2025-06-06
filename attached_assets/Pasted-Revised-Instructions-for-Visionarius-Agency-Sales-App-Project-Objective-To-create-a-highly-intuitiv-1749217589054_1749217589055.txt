@@ -1,0 +1,44 @@
+Revised Instructions for Visionarius Agency Sales App
+Project Objective: To create a highly intuitive and visually clear internal sales performance application. The primary goal is to empower the sales team with at-a-glance insights and a frictionless data entry process. Prioritize clarity, speed, and usability above all else.
+
+1. Dashboard View: The "Mission Control"
+This is the main interface and must be clean and scannable. Use a card-based or widget-based layout. Do not present data as a simple list.
+
+Layout & Design:
+
+Top-Level KPIs: At the very top, display the most critical metrics as large, bold numbers in individual "KPI cards." Each card should have a clear title (e.g., "Cash Collected," "Closing Rate," "Avg. Sales Cycle"). This provides an immediate summary.
+KPIs for this section: Cash Collected, Closing Rate, Proposals Pitched, Avg. Sales Cycle Duration, Total Calls.
+Show-Up & Funnel Rates (Mid-Section):
+Show-Up Rates: Display these using progress bars or donut charts for instant visual assessment. Each rate (e.g., "First Discovery Show-Up Rate") should be clearly labeled.
+Funnel Movement Rates: The best way to visualize this is with a Sankey Diagram. This will clearly show the flow of clients from one stage to the next (e.g., from First Discovery to Second Discovery, First Closing, or Lost). This is a critical visualization requirement.
+Time & Averages (Lower-Section):
+Display time-based metrics and call duration averages in a clean, tabular format or as a series of smaller KPI cards.
+Filtering:
+Implement a single, prominent date filter at the top right of the dashboard. It should be a simple dropdown allowing the user to select a Month and Year. All data on the dashboard must dynamically update based on this selection.
+2. Input View: "The Spreadsheet Killer"
+The goal here is efficiency. The interface should feel as fast as a spreadsheet but with the structure of a modern web app. It will be a single, scrollable page with one row per client.
+
+Layout & Functionality:
+
+Table Interface: Create a clean, table-based layout. Each row represents a client, and columns represent the data points.
+Client Entry:
+A prominent "➕ Add New Client" button should be visible at the top. Clicking it adds a new, blank row to the top of the table for immediate editing.
+In-line Editing:
+Client Name: Simple text field.
+Dates: Clicking on a date field (e.g., "Date of First Discovery") must open a calendar date-picker.
+Call Duration: Input as a simple number (minutes).
+Proposal Status: Use a dropdown menu with pre-defined options (N/A, Created, Pitched). This prevents typos and standardizes data.
+Revenue Collected: A numerical input field, formatted for currency.
+Links & Files:
+Call Recording: This should be a URL input field. Display a small "Play" or "Link" icon next to it that opens the URL in a new tab.
+Files: For each client row, include a "Files" or "Docs" button/icon. Clicking it should open a simple modal window (pop-up) where a user can either drag-and-drop files or paste file URLs for storage.
+Auto-Saving: The view should save data automatically as it's entered or when a user clicks out of a field. Provide subtle visual feedback (e.g., a temporary "Saved!" checkmark) to confirm the action.
+3. Backend & Automation Logic
+Automated Calculations: All KPIs on the Dashboard must be calculated automatically from the raw data entered in the Input View. The frontend should never be responsible for calculations.
+Real-Time Updates: When data is added or modified in the Input View, the Dashboard should reflect these changes instantly, or with a clear "Refresh" button if instant updates are not feasible.
+Data Integrity: The backend logic must be robust. For example, the Closing Rate calculation should correctly identify "Won" clients based on the presence of a Third Closing Call date and positive Revenue Collected, versus those marked as Lost. The funnel movement rates depend entirely on correctly interpreting the sequence of call dates.
+
+
+
+
+
