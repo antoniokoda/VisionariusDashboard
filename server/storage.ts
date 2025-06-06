@@ -1,0 +1,152 @@
+import { clients, type Client, type InsertClient, type UpdateClient, type User, type InsertUser } from "@shared/schema";
+
+export interface IStorage {
+  // User methods
+  getUser(id: number): Promise<User | undefined>;
+  getUserByUsername(username: string): Promise<User | undefined>;
+  createUser(user: InsertUser): Promise<User>;
+  
+  // Client methods
+  getAllClients(): Promise<Client[]>;
+  getClient(id: number): Promise<Client | undefined>;
+  getClientsByMonth(year: number, month: number): Promise<Client[]>;
+  createClient(client: InsertClient): Promise<Client>;
+  updateClient(id: number, client: UpdateClient): Promise<Client | undefined>;
+  deleteClient(id: number): Promise<boolean>;
+}
+
+export class MemStorage implements IStorage {
+  private users: Map<number, User>;
+  private clients: Map<number, Client>;
+  private currentUserId: number;
+  private currentClientId: number;
+
+  constructor() {
+    this.users = new Map();
+    this.clients = new Map();
+    this.currentUserId = 1;
+    this.currentClientId = 1;
+    
+    // Initialize with some sample data for development
+    this.initializeSampleData();
+  }
+
+  private initializeSampleData() {
+    // Add a few sample clients to demonstrate the system
+    const sampleClients: InsertClient[] = [
+      {
+        name: "TechCorp Solutions",
+        discovery1Date: "2024-03-05",
+        discovery1Duration: 45,
+        discovery1Recording: "https://zoom.us/rec/123",
+        discovery2Date: "2024-03-12",
+        discovery2Duration: 38,
+        discovery2Recording: "https://zoom.us/rec/456",
+        closing1Date: "2024-03-20",
+        closing1Duration: 55,
+        closing1Recording: "https://zoom.us/rec/789",
+        proposalStatus: "Pitched",
+        revenue: "32500",
+        isWon: true,
+        files: JSON.stringify(["proposal_techcorp.pdf", "contract_signed.pdf"]),
+      },
+      {
+        name: "Global Industries Inc",
+        discovery1Date: "2024-03-08",
+        discovery1Duration: 42,
+        proposalStatus: "Created",
+        revenue: "0",
+        files: JSON.stringify([]),
+      },
+      {
+        name: "StartupX Ventures", 
+        discovery1Date: "2024-03-15",
+        discovery1Duration: 50,
+        discovery2Date: "2024-03-22",
+        discovery2Duration: 45,
+        discovery3Date: "2024-03-29",
+        discovery3Duration: 40,
+        closing1Date: "2024-04-05",
+        closing1Duration: 60,
+        closing2Date: "2024-04-12",
+        closing2Duration: 55,
+        closing3Date: "2024-04-19",
+        closing3Duration: 50,
+        proposalStatus: "Pitched",
+        revenue: "45000",
+        isWon: true,
+        files: JSON.stringify(["proposal_startupx.pdf"]),
+      },
+    ];
+
+    sampleClients.forEach(client => {
+      this.createClient(client);
+    });
+  }
+
+  // User methods
+  async getUser(id: number): Promise<User | undefined> {
+    return this.users.get(id);
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find(
+      (user) => user.username === username,
+    );
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const id = this.currentUserId++;
+    const user: User = { ...insertUser, id };
+    this.users.set(id, user);
+    return user;
+  }
+
+  // Client methods
+  async getAllClients(): Promise<Client[]> {
+    return Array.from(this.clients.values());
+  }
+
+  async getClient(id: number): Promise<Client | undefined> {
+    return this.clients.get(id);
+  }
+
+  async getClientsByMonth(year: number, month: number): Promise<Client[]> {
+    const allClients = Array.from(this.clients.values());
+    return allClients.filter(client => {
+      if (!client.createdAt) return false;
+      const clientDate = new Date(client.createdAt);
+      return clientDate.getFullYear() === year && clientDate.getMonth() + 1 === month;
+    });
+  }
+
+  async createClient(insertClient: InsertClient): Promise<Client> {
+    const id = this.currentClientId++;
+    const client: Client = {
+      ...insertClient,
+      id,
+      createdAt: new Date().toISOString().split('T')[0], // YYYY-MM-DD format
+    };
+    this.clients.set(id, client);
+    return client;
+  }
+
+  async updateClient(id: number, updateClient: UpdateClient): Promise<Client | undefined> {
+    const existingClient = this.clients.get(id);
+    if (!existingClient) return undefined;
+
+    const updatedClient: Client = {
+      ...existingClient,
+      ...updateClient,
+    };
+    
+    this.clients.set(id, updatedClient);
+    return updatedClient;
+  }
+
+  async deleteClient(id: number): Promise<boolean> {
+    return this.clients.delete(id);
+  }
+}
+
+export const storage = new MemStorage();
