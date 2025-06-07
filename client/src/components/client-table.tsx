@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { FileUploadModal } from "./file-upload-modal";
 import { ClientConversation } from "./client-conversation";
 import { DatePicker } from "./ui/date-picker";
-import { Plus, Trash2, ExternalLink, Folder, Check, MessageCircle } from "lucide-react";
+import { Plus, Trash2, ExternalLink, Folder, Check, MessageCircle, Users } from "lucide-react";
 import { type Client, type InsertClient, type UpdateClient } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -189,9 +189,7 @@ export function ClientTable({ clients }: ClientTableProps) {
             <table className="w-full">
               <thead className="bg-gray-50 border-b">
                 <tr>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-40">Client Name</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-36">Email</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Phone</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-40">Sales Opportunity</th>
                   <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Discovery 1</th>
                   <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Discovery 2</th>
                   <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Discovery 3</th>
@@ -240,32 +238,6 @@ export function ClientTable({ clients }: ClientTableProps) {
                             Saved
                           </div>
                         )}
-                      </div>
-                    </td>
-
-                    {/* Email */}
-                    <td className="py-3 px-4 w-36">
-                      <div className="w-full">
-                        <Input
-                          type="email"
-                          value={client.email || ""}
-                          onChange={(e) => handleUpdateClient(client.id, "email", e.target.value)}
-                          placeholder="client@company.com"
-                          className="w-full text-sm h-10 border-none bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20"
-                        />
-                      </div>
-                    </td>
-
-                    {/* Phone */}
-                    <td className="py-3 px-4 w-32">
-                      <div className="w-full">
-                        <Input
-                          type="tel"
-                          value={client.phone || ""}
-                          onChange={(e) => handleUpdateClient(client.id, "phone", e.target.value)}
-                          placeholder="+1 (555) 123-4567"
-                          className="w-full text-sm h-10 border-none bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20"
-                        />
                       </div>
                     </td>
 

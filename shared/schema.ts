@@ -4,9 +4,8 @@ import { z } from "zod";
 
 export const clients = pgTable("clients", {
   id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  email: text("email"),
-  phone: text("phone"),
+  name: text("name").notNull(), // Now represents "Sales Opportunity Name"
+  contacts: text("contacts").default("[]"), // JSON array of contact objects
   
   // Discovery call dates and durations
   discovery1Date: date("discovery1_date"),
@@ -159,4 +158,12 @@ export interface ConversationMessage {
   type: "text" | "audio" | "file";
   timestamp: string;
   fileUrl?: string;
+}
+
+export interface Contact {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  role?: string;
 }

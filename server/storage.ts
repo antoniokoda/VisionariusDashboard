@@ -35,9 +35,11 @@ export class MemStorage implements IStorage {
     // Add a few sample clients to demonstrate the system
     const sampleClients: InsertClient[] = [
       {
-        name: "TechCorp Solutions",
-        email: "contact@techcorp.com",
-        phone: "+1 (555) 123-4567",
+        name: "TechCorp Enterprise Solution",
+        contacts: JSON.stringify([
+          { id: "1", name: "John Smith", email: "john.smith@techcorp.com", phone: "+1 (555) 123-4567", role: "CTO" },
+          { id: "2", name: "Sarah Johnson", email: "sarah.johnson@techcorp.com", phone: "+1 (555) 123-4568", role: "VP Engineering" }
+        ]),
         discovery1Date: "2024-03-05",
         discovery1Duration: 45,
         discovery1Recording: "https://zoom.us/rec/123",
@@ -54,9 +56,10 @@ export class MemStorage implements IStorage {
         conversation: JSON.stringify([]),
       },
       {
-        name: "Global Industries Inc",
-        email: "info@globalindustries.com",
-        phone: "+1 (555) 987-6543",
+        name: "Global Industries Digital Transformation",
+        contacts: JSON.stringify([
+          { id: "3", name: "Michael Chen", email: "m.chen@globalindustries.com", phone: "+1 (555) 987-6543", role: "CEO" }
+        ]),
         discovery1Date: "2024-03-08",
         discovery1Duration: 42,
         proposalStatus: "Created",
@@ -64,9 +67,11 @@ export class MemStorage implements IStorage {
         files: JSON.stringify([]),
       },
       {
-        name: "StartupX Ventures", 
-        email: "team@startupx.io",
-        phone: "+1 (555) 456-7890",
+        name: "StartupX Growth Initiative", 
+        contacts: JSON.stringify([
+          { id: "4", name: "Emily Rodriguez", email: "emily@startupx.io", phone: "+1 (555) 456-7890", role: "Founder" },
+          { id: "5", name: "David Kim", email: "david@startupx.io", phone: "+1 (555) 456-7891", role: "CTO" }
+        ]),
         discovery1Date: "2024-03-15",
         discovery1Duration: 50,
         discovery2Date: "2024-03-22",
@@ -132,8 +137,7 @@ export class MemStorage implements IStorage {
     const client: Client = {
       id,
       name: insertClient.name || "",
-      email: insertClient.email || null,
-      phone: insertClient.phone || null,
+      contacts: insertClient.contacts || "[]",
       discovery1Date: insertClient.discovery1Date || null,
       discovery1Duration: insertClient.discovery1Duration || null,
       discovery1Recording: insertClient.discovery1Recording || null,
