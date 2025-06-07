@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -21,10 +21,34 @@ export function ClientTable({ clients }: ClientTableProps) {
   const [conversationOpen, setConversationOpen] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState<number | null>(null);
   const [saveFeedback, setSaveFeedback] = useState<{ [key: number]: boolean }>({});
+  const [highlightedClientId, setHighlightedClientId] = useState<number | null>(null);
+  const tableRef = useRef<HTMLTableElement>(null);
   const queryClient = useQueryClient();
 
   useEffect(() => {
     setLocalClients(clients);
+  }, [clients]);
+
+  // Check for highlighted client from calendar navigation
+  useEffect(() => {
+    const highlightId = sessionStorage.getItem('highlightClientId');
+    if (highlightId && clients.length > 0) {
+      const clientId = parseInt(highlightId);
+      setHighlightedClientId(clientId);
+      
+      // Scroll to the highlighted client row after a short delay
+      setTimeout(() => {
+        const row = document.querySelector(`[data-client-id="${clientId}"]`);
+        if (row) {
+          row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Remove highlight after 3 seconds
+          setTimeout(() => {
+            setHighlightedClientId(null);
+            sessionStorage.removeItem('highlightClientId');
+          }, 3000);
+        }
+      }, 100);
+    }
   }, [clients]);
 
   const createClientMutation = useMutation({
@@ -172,7 +196,17 @@ export function ClientTable({ clients }: ClientTableProps) {
               </thead>
               <tbody>
                 {localClients.map((client) => (
-                  <tr key={client.id} className="border-b hover:bg-gray-50 transition-colors">
+                  <tr 
+                    key={client.id} 
+                    data-client-id={client.id}
+                    className={`
+                      border-b transition-all duration-500
+                      ${highlightedClientId === client.id 
+                        ? 'bg-blue-100 border-blue-300 shadow-md' 
+                        : 'hover:bg-gray-50'
+                      }
+                    `}
+                  >
                     <td className="py-3 px-4 w-40">
                       <div className="w-full">
                         <textarea
@@ -445,23 +479,15 @@ export function ClientTable({ clients }: ClientTableProps) {
                     </td>
 
                     {/* Revenue */}
-                    <td className="py-3 px-4 w-40">
+                    <td className="py-3 px-4 w-48">
                       <div className="relative w-full">
-                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">$</span>
-                        <textarea
+                        <span className="absolute left-3 top-3 text-gray-500 text-sm">$</span>
+                        <Input
+                          type="text"
                           value={client.revenue || "0"}
                           onChange={(e) => handleUpdateClient(client.id, "revenue", e.target.value)}
                           placeholder="0"
-                          className="w-full min-h-[40px] max-h-[60px] pl-8 pr-3 py-2 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none overflow-hidden text-sm"
-                          style={{ 
-                            height: 'auto',
-                            minHeight: '40px'
-                          }}
-                          onInput={(e) => {
-                            const target = e.target as HTMLTextAreaElement;
-                            target.style.height = 'auto';
-                            target.style.height = Math.min(target.scrollHeight, 60) + 'px';
-                          }}
+                          className="w-full pl-8 pr-3 py-2 text-sm h-10"
                         />
                       </div>
                     </td>

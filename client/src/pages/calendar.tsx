@@ -267,8 +267,9 @@ export default function Calendar() {
                       variant="outline" 
                       className="w-full"
                       onClick={() => {
-                        // Navigate to client details in data entry
-                        window.location.href = `/data-entry?client=${selectedEvent.clientId}`;
+                        // Store client ID for highlighting and navigate to data entry
+                        sessionStorage.setItem('highlightClientId', selectedEvent.clientId.toString());
+                        window.location.href = '/data-entry';
                       }}
                     >
                       <User className="h-4 w-4 mr-2" />
