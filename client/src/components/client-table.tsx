@@ -5,8 +5,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { FileUploadModal } from "./file-upload-modal";
+import { ClientConversation } from "./client-conversation";
 import { DatePicker } from "./ui/date-picker";
-import { Plus, Trash2, ExternalLink, Folder, Check } from "lucide-react";
+import { Plus, Trash2, ExternalLink, Folder, Check, MessageCircle } from "lucide-react";
 import { type Client, type InsertClient, type UpdateClient } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -17,6 +18,7 @@ interface ClientTableProps {
 export function ClientTable({ clients }: ClientTableProps) {
   const [localClients, setLocalClients] = useState<Client[]>(clients);
   const [fileModalOpen, setFileModalOpen] = useState(false);
+  const [conversationOpen, setConversationOpen] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState<number | null>(null);
   const [saveFeedback, setSaveFeedback] = useState<{ [key: number]: boolean }>({});
   const queryClient = useQueryClient();
@@ -103,6 +105,11 @@ export function ClientTable({ clients }: ClientTableProps) {
   const openFileModal = (clientId: number) => {
     setSelectedClientId(clientId);
     setFileModalOpen(true);
+  };
+
+  const openConversation = (clientId: number) => {
+    setSelectedClientId(clientId);
+    setConversationOpen(true);
   };
 
   const formatDate = (dateString: string | null): Date | undefined => {
@@ -465,14 +472,26 @@ export function ClientTable({ clients }: ClientTableProps) {
 
                     {/* Actions */}
                     <td className="py-3 px-4">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDeleteClient(client.id)}
-                        className="text-red-500 hover:text-red-700 h-8 w-8"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <div className="flex items-center space-x-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => openConversation(client.id)}
+                          className="text-blue-500 hover:text-blue-700 h-8 w-8"
+                          title="Abrir conversación"
+                        >
+                          <MessageCircle className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDeleteClient(client.id)}
+                          className="text-red-500 hover:text-red-700 h-8 w-8"
+                          title="Eliminar cliente"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -490,6 +509,16 @@ export function ClientTable({ clients }: ClientTableProps) {
           clientId={selectedClientId}
           currentFiles={getFiles(localClients.find(c => c.id === selectedClientId)?.files || "[]")}
           onFilesUpdate={(files) => handleFilesUpdate(selectedClientId, files)}
+        />
+      )}
+
+      {/* Client Conversation Modal */}
+      {selectedClientId && (
+        <ClientConversation
+          isOpen={conversationOpen}
+          onClose={() => setConversationOpen(false)}
+          clientId={selectedClientId}
+          clientName={localClients.find(c => c.id === selectedClientId)?.name || "Cliente"}
         />
       )}
     </div>
