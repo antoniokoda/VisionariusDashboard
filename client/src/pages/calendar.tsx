@@ -17,7 +17,7 @@ export default function Calendar() {
   });
 
   const formatDate = (date: Date): string => {
-    return date.toLocaleDateString('es-ES', {
+    return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
@@ -25,7 +25,7 @@ export default function Calendar() {
   };
 
   const formatTime = (dateString: string): string => {
-    return new Date(dateString).toLocaleTimeString('es-ES', {
+    return new Date(dateString).toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit'
     });
@@ -39,12 +39,12 @@ export default function Calendar() {
 
   const getEventTypeLabel = (type: string): string => {
     const typeMap: { [key: string]: string } = {
-      "discovery1": "Descubrimiento 1",
-      "discovery2": "Descubrimiento 2", 
-      "discovery3": "Descubrimiento 3",
-      "closing1": "Cierre 1",
-      "closing2": "Cierre 2",
-      "closing3": "Cierre 3"
+      "discovery1": "Discovery 1",
+      "discovery2": "Discovery 2", 
+      "discovery3": "Discovery 3",
+      "closing1": "Closing 1",
+      "closing2": "Closing 2",
+      "closing3": "Closing 3"
     };
     return typeMap[type] || type;
   };
@@ -113,15 +113,15 @@ export default function Calendar() {
   }
 
   const days = getDaysInMonth(currentDate);
-  const weekDays = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+  const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-neutral-900">Calendario de Llamadas</h1>
-          <p className="text-neutral-600">Visualiza todas las llamadas pasadas, presentes y futuras</p>
+          <h1 className="text-3xl font-bold text-neutral-900">Call Calendar</h1>
+          <p className="text-neutral-600">View all past, present and future calls</p>
         </div>
         
         {/* Month Navigation */}
@@ -143,7 +143,7 @@ export default function Calendar() {
         <div className="lg:col-span-2">
           <Card>
             <CardHeader>
-              <CardTitle>Vista de Calendario</CardTitle>
+              <CardTitle>Calendar View</CardTitle>
             </CardHeader>
             <CardContent>
               {/* Week Days Header */}
