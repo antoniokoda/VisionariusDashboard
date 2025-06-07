@@ -10,7 +10,7 @@ import { DollarSign, Target, ChartGantt, Clock, Phone, TrendingUp } from "lucide
 import { type DashboardData } from "@shared/schema";
 
 export default function Dashboard() {
-  const [selectedPeriod, setSelectedPeriod] = useState("2024-03");
+  const [selectedPeriod, setSelectedPeriod] = useState("all");
 
   const { data: dashboardData, isLoading } = useQuery<DashboardData>({
     queryKey: ["/api/dashboard"],
@@ -18,25 +18,26 @@ export default function Dashboard() {
   });
 
   const periodOptions = [
-    { value: "2024-01", label: "Enero 2024" },
-    { value: "2024-02", label: "Febrero 2024" },
-    { value: "2024-03", label: "Marzo 2024" },
-    { value: "2024-04", label: "Abril 2024" },
-    { value: "2024-05", label: "Mayo 2024" },
-    { value: "2024-06", label: "Junio 2024" },
+    { value: "all", label: "All Months" },
+    { value: "2024-01", label: "January 2024" },
+    { value: "2024-02", label: "February 2024" },
+    { value: "2024-03", label: "March 2024" },
+    { value: "2024-04", label: "April 2024" },
+    { value: "2024-05", label: "May 2024" },
+    { value: "2024-06", label: "June 2024" },
   ];
 
   const formatCurrency = (amount: number): string => {
-    return new Intl.NumberFormat('es-ES', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'EUR',
+      currency: 'USD',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
   };
 
   const formatDays = (days: number): string => {
-    return `${days} día${days !== 1 ? 's' : ''}`;
+    return `${days} day${days !== 1 ? 's' : ''}`;
   };
 
   const formatMinutes = (minutes: number): string => {
@@ -70,11 +71,11 @@ export default function Dashboard() {
       {/* Header with Filter */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900">Panel de Control - Centro de Comando</h1>
-          <p className="text-neutral-600">Resumen del rendimiento de ventas</p>
+          <h1 className="text-2xl font-bold text-neutral-900">Mission Control Dashboard</h1>
+          <p className="text-neutral-600">Sales performance overview</p>
         </div>
         <div className="flex items-center space-x-3">
-          <label className="text-sm font-medium text-neutral-600">Filtrar Período:</label>
+          <label className="text-sm font-medium text-neutral-600">Filter Period:</label>
           <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
             <SelectTrigger className="w-48">
               <SelectValue />

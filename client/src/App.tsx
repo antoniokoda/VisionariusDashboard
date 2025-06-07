@@ -8,7 +8,6 @@ import { BarChart3, Table, Calendar as CalendarIcon } from "lucide-react";
 import Dashboard from "@/pages/dashboard";
 import DataEntry from "@/pages/data-entry";
 import Calendar from "@/pages/calendar";
-import Overview from "@/pages/overview";
 import NotFound from "@/pages/not-found";
 import logoPath from "@assets/Untitled design (1)_1749318828090.png";
 
@@ -25,7 +24,7 @@ function Header() {
               <h1 className="text-xl font-bold text-neutral-900">Visionarius Agency</h1>
             </div>
             <span className="text-neutral-500">|</span>
-            <span className="text-neutral-600 font-medium">Panel de Ventas</span>
+            <span className="text-neutral-600 font-medium">Sales Performance</span>
           </div>
 
           <nav className="flex space-x-4">
@@ -35,16 +34,7 @@ function Header() {
                 className="flex items-center space-x-2"
               >
                 <BarChart3 className="h-4 w-4" />
-                <span>Panel de Control</span>
-              </Button>
-            </Link>
-            <Link href="/overview">
-              <Button
-                variant={location === "/overview" ? "default" : "ghost"}
-                className="flex items-center space-x-2"
-              >
-                <BarChart3 className="h-4 w-4" />
-                <span>Vista General</span>
+                <span>Dashboard</span>
               </Button>
             </Link>
             <Link href="/data-entry">
@@ -53,7 +43,7 @@ function Header() {
                 className="flex items-center space-x-2"
               >
                 <Table className="h-4 w-4" />
-                <span>Entrada de Datos</span>
+                <span>Data Entry</span>
               </Button>
             </Link>
             <Link href="/calendar">
@@ -62,7 +52,7 @@ function Header() {
                 className="flex items-center space-x-2"
               >
                 <CalendarIcon className="h-4 w-4" />
-                <span>Calendario</span>
+                <span>Calendar</span>
               </Button>
             </Link>
           </nav>
@@ -79,7 +69,6 @@ function Router() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Switch>
           <Route path="/" component={Dashboard} />
-          <Route path="/overview" component={Overview} />
           <Route path="/data-entry" component={DataEntry} />
           <Route path="/calendar" component={Calendar} />
           <Route component={NotFound} />
