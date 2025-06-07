@@ -201,7 +201,7 @@ export default function Calendar() {
                         ))}
                         {dayEvents.length > 2 && (
                           <div className="text-xs text-neutral-500 text-center">
-                            +{dayEvents.length - 2} más
+                            +{dayEvents.length - 2} more
                           </div>
                         )}
                       </div>

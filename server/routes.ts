@@ -147,7 +147,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         callTypes.forEach(call => {
           if (call.date) {
-            const typeLabel = call.type.includes("discovery") ? "Descubrimiento" : "Cierre";
+            const typeLabel = call.type.includes("discovery") ? "Discovery" : "Closing";
             const callNumber = call.type.slice(-1);
             events.push({
               id: `${client.id}-${call.type}`,

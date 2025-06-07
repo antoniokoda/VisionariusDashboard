@@ -74,13 +74,10 @@ export function ClientConversation({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl h-[600px] flex flex-col">
-        <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-4 border-b">
+        <DialogHeader className="pb-4 border-b">
           <DialogTitle className="text-lg font-semibold">
             Conversation - {clientName}
           </DialogTitle>
-          <Button variant="ghost" size="icon" onClick={onClose}>
-            <X className="h-4 w-4" />
-          </Button>
         </DialogHeader>
 
         {/* Messages Area */}
