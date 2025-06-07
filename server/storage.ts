@@ -36,6 +36,8 @@ export class MemStorage implements IStorage {
     const sampleClients: InsertClient[] = [
       {
         name: "TechCorp Solutions",
+        email: "contact@techcorp.com",
+        phone: "+1 (555) 123-4567",
         discovery1Date: "2024-03-05",
         discovery1Duration: 45,
         discovery1Recording: "https://zoom.us/rec/123",
@@ -53,6 +55,8 @@ export class MemStorage implements IStorage {
       },
       {
         name: "Global Industries Inc",
+        email: "info@globalindustries.com",
+        phone: "+1 (555) 987-6543",
         discovery1Date: "2024-03-08",
         discovery1Duration: 42,
         proposalStatus: "Created",
@@ -61,6 +65,8 @@ export class MemStorage implements IStorage {
       },
       {
         name: "StartupX Ventures", 
+        email: "team@startupx.io",
+        phone: "+1 (555) 456-7890",
         discovery1Date: "2024-03-15",
         discovery1Duration: 50,
         discovery2Date: "2024-03-22",
@@ -126,6 +132,8 @@ export class MemStorage implements IStorage {
     const client: Client = {
       id,
       name: insertClient.name || "",
+      email: insertClient.email || null,
+      phone: insertClient.phone || null,
       discovery1Date: insertClient.discovery1Date || null,
       discovery1Duration: insertClient.discovery1Duration || null,
       discovery1Recording: insertClient.discovery1Recording || null,

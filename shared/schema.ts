@@ -5,6 +5,8 @@ import { z } from "zod";
 export const clients = pgTable("clients", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
+  email: text("email"),
+  phone: text("phone"),
   
   // Discovery call dates and durations
   discovery1Date: date("discovery1_date"),

@@ -190,6 +190,8 @@ export function ClientTable({ clients }: ClientTableProps) {
               <thead className="bg-gray-50 border-b">
                 <tr>
                   <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-40">Client Name</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-36">Email</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Phone</th>
                   <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Discovery 1</th>
                   <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Discovery 2</th>
                   <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Discovery 3</th>
