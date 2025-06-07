@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertClientSchema, updateClientSchema, type DashboardData, type CalendarEvent } from "@shared/schema";
+import { insertClientSchema, updateClientSchema, type DashboardData, type CalendarEvent, type Client } from "@shared/schema";
 import { calculateKPIs, calculateShowUpRates, calculateFunnelData, calculateTimeMetrics, calculateCallMetrics } from "../client/src/lib/calculations";
 
 export async function registerRoutes(app: Express): Promise<Server> {

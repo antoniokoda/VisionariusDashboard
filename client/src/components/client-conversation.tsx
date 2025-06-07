@@ -7,7 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Send, Mic, Paperclip, X } from "lucide-react";
 import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { enUS } from "date-fns/locale";
 import { type ConversationMessage } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -25,7 +25,7 @@ export function ClientConversation({
   clientName 
 }: ClientConversationProps) {
   const [newMessage, setNewMessage] = useState("");
-  const [userName] = useState("Usuario"); // In a real app, this would come from auth
+  const [userName] = useState("User"); // In a real app, this would come from auth
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
 
@@ -64,7 +64,7 @@ export function ClientConversation({
   };
 
   const formatMessageTime = (timestamp: string): string => {
-    return format(new Date(timestamp), "d MMM 'a las' HH:mm", { locale: es });
+    return format(new Date(timestamp), "MMM d 'at' HH:mm", { locale: enUS });
   };
 
   const getInitials = (name: string): string => {
@@ -76,7 +76,7 @@ export function ClientConversation({
       <DialogContent className="max-w-2xl h-[600px] flex flex-col">
         <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-4 border-b">
           <DialogTitle className="text-lg font-semibold">
-            Conversación - {clientName}
+            Conversation - {clientName}
           </DialogTitle>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-4 w-4" />
@@ -87,13 +87,13 @@ export function ClientConversation({
         <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
           {isLoading ? (
             <div className="flex items-center justify-center h-32">
-              <div className="text-neutral-500">Cargando conversación...</div>
+              <div className="text-neutral-500">Loading conversation...</div>
             </div>
           ) : messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-32 text-center">
-              <div className="text-neutral-500 mb-2">No hay mensajes aún</div>
+              <div className="text-neutral-500 mb-2">No messages yet</div>
               <div className="text-sm text-neutral-400">
-                Empieza la conversación escribiendo una nota sobre este cliente
+                Start the conversation by writing a note about this client
               </div>
             </div>
           ) : (
@@ -139,7 +139,7 @@ export function ClientConversation({
                       ) : message.type === "file" ? (
                         <div className="flex items-center space-x-2">
                           <Paperclip className="h-4 w-4 text-gray-500" />
-                          <span className="text-sm text-gray-600">Archivo adjunto</span>
+                          <span className="text-sm text-gray-600">File attachment</span>
                           {message.fileUrl && (
                             <Button
                               variant="link"
@@ -147,7 +147,7 @@ export function ClientConversation({
                               className="p-0 h-auto text-xs"
                               onClick={() => window.open(message.fileUrl!, '_blank')}
                             >
-                              Abrir
+                              Open
                             </Button>
                           )}
                         </div>
