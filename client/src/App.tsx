@@ -4,10 +4,13 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { BarChart3, Table, ChartLine } from "lucide-react";
+import { BarChart3, Table, Calendar as CalendarIcon } from "lucide-react";
 import Dashboard from "@/pages/dashboard";
 import DataEntry from "@/pages/data-entry";
+import Calendar from "@/pages/calendar";
+import Overview from "@/pages/overview";
 import NotFound from "@/pages/not-found";
+import logoPath from "@assets/Untitled design (1)_1749318828090.png";
 
 function Header() {
   const [location] = useLocation();
@@ -18,13 +21,11 @@ function Header() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <ChartLine className="text-white h-4 w-4" />
-              </div>
+              <img src={logoPath} alt="Visionarius Logo" className="w-8 h-8" />
               <h1 className="text-xl font-bold text-neutral-900">Visionarius Agency</h1>
             </div>
             <span className="text-neutral-500">|</span>
-            <span className="text-neutral-600 font-medium">Sales Performance</span>
+            <span className="text-neutral-600 font-medium">Panel de Ventas</span>
           </div>
 
           <nav className="flex space-x-4">
@@ -34,7 +35,16 @@ function Header() {
                 className="flex items-center space-x-2"
               >
                 <BarChart3 className="h-4 w-4" />
-                <span>Dashboard</span>
+                <span>Panel de Control</span>
+              </Button>
+            </Link>
+            <Link href="/overview">
+              <Button
+                variant={location === "/overview" ? "default" : "ghost"}
+                className="flex items-center space-x-2"
+              >
+                <BarChart3 className="h-4 w-4" />
+                <span>Vista General</span>
               </Button>
             </Link>
             <Link href="/data-entry">
@@ -43,7 +53,16 @@ function Header() {
                 className="flex items-center space-x-2"
               >
                 <Table className="h-4 w-4" />
-                <span>Data Entry</span>
+                <span>Entrada de Datos</span>
+              </Button>
+            </Link>
+            <Link href="/calendar">
+              <Button
+                variant={location === "/calendar" ? "default" : "ghost"}
+                className="flex items-center space-x-2"
+              >
+                <CalendarIcon className="h-4 w-4" />
+                <span>Calendario</span>
               </Button>
             </Link>
           </nav>
@@ -60,7 +79,9 @@ function Router() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Switch>
           <Route path="/" component={Dashboard} />
+          <Route path="/overview" component={Overview} />
           <Route path="/data-entry" component={DataEntry} />
+          <Route path="/calendar" component={Calendar} />
           <Route component={NotFound} />
         </Switch>
       </main>
