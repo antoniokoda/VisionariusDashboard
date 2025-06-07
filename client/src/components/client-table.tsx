@@ -134,10 +134,10 @@ export function ClientTable({ clients }: ClientTableProps) {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-neutral-900">Client Data Entry</h2>
+        <h2 className="text-2xl font-bold text-neutral-900">Entrada de Datos de Clientes</h2>
         <Button onClick={handleAddClient} className="flex items-center space-x-2">
           <Plus className="h-4 w-4" />
-          <span>Add New Client</span>
+          <span>Agregar Nuevo Cliente</span>
         </Button>
       </div>
 
@@ -147,35 +147,46 @@ export function ClientTable({ clients }: ClientTableProps) {
             <table className="w-full">
               <thead className="bg-gray-50 border-b">
                 <tr>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm">Client Name</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm">Discovery 1</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm">Discovery 2</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm">Discovery 3</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm">Closing 1</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm">Closing 2</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm">Closing 3</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm">Proposal</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm">Revenue</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm">Files</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm">Actions</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-40">Nombre del Cliente</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Descubrimiento 1</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Descubrimiento 2</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Descubrimiento 3</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Cierre 1</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Cierre 2</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Cierre 3</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-24">Propuesta</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Ingresos</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-20">Archivos</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {localClients.map((client) => (
                   <tr key={client.id} className="border-b hover:bg-gray-50 transition-colors">
-                    <td className="py-3 px-4">
-                      <Input
-                        value={client.name}
-                        onChange={(e) => handleUpdateClient(client.id, "name", e.target.value)}
-                        placeholder="Enter client name..."
-                        className="border-none bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20"
-                      />
-                      {saveFeedback[client.id] && (
-                        <div className="text-xs text-green-600 mt-1 flex items-center">
-                          <Check className="h-3 w-3 mr-1" />
-                          Saved
-                        </div>
-                      )}
+                    <td className="py-3 px-4 w-40">
+                      <div className="w-full">
+                        <textarea
+                          value={client.name}
+                          onChange={(e) => handleUpdateClient(client.id, "name", e.target.value)}
+                          placeholder="Ingresa el nombre del cliente..."
+                          className="w-full min-h-[40px] max-h-[80px] border-none bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none overflow-hidden text-sm"
+                          style={{ 
+                            height: 'auto',
+                            minHeight: '40px'
+                          }}
+                          onInput={(e) => {
+                            const target = e.target as HTMLTextAreaElement;
+                            target.style.height = 'auto';
+                            target.style.height = Math.min(target.scrollHeight, 80) + 'px';
+                          }}
+                        />
+                        {saveFeedback[client.id] && (
+                          <div className="text-xs text-green-600 mt-1 flex items-center">
+                            <Check className="h-3 w-3 mr-1" />
+                            Guardado
+                          </div>
+                        )}
+                      </div>
                     </td>
 
                     {/* Discovery 1 */}
@@ -417,22 +428,24 @@ export function ClientTable({ clients }: ClientTableProps) {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="N/A">N/A</SelectItem>
-                          <SelectItem value="Created">Created</SelectItem>
-                          <SelectItem value="Pitched">Pitched</SelectItem>
+                          <SelectItem value="Created">Creada</SelectItem>
+                          <SelectItem value="Pitched">Presentada</SelectItem>
                         </SelectContent>
                       </Select>
                     </td>
 
                     {/* Revenue */}
-                    <td className="py-3 px-4">
-                      <div className="relative">
-                        <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">$</span>
+                    <td className="py-3 px-4 w-32">
+                      <div className="relative w-full">
+                        <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">€</span>
                         <Input
                           type="number"
                           value={client.revenue || "0"}
                           onChange={(e) => handleUpdateClient(client.id, "revenue", e.target.value)}
                           placeholder="0"
-                          className="pl-6 text-sm h-8"
+                          className="pl-6 text-sm h-10 w-full"
+                          min="0"
+                          step="100"
                         />
                       </div>
                     </td>
