@@ -217,7 +217,7 @@ export default function Calendar() {
         <div>
           <Card>
             <CardHeader>
-              <CardTitle>Detalles del Evento</CardTitle>
+              <CardTitle>Event Details</CardTitle>
             </CardHeader>
             <CardContent>
               {selectedEvent ? (
@@ -235,7 +235,7 @@ export default function Calendar() {
                     <div className="flex items-center space-x-2">
                       <Phone className="h-4 w-4 text-neutral-500" />
                       <span className="text-sm text-neutral-600">
-                        Fecha: {new Date(selectedEvent.date).toLocaleDateString('es-ES')}
+                        Date: {new Date(selectedEvent.date).toLocaleDateString('en-US')}
                       </span>
                     </div>
 
@@ -243,7 +243,7 @@ export default function Calendar() {
                       <div className="flex items-center space-x-2">
                         <Clock className="h-4 w-4 text-neutral-500" />
                         <span className="text-sm text-neutral-600">
-                          Duración: {selectedEvent.duration} minutos
+                          Duration: {selectedEvent.duration} minutes
                         </span>
                       </div>
                     )}
@@ -256,7 +256,7 @@ export default function Calendar() {
                           className="p-0 h-auto text-sm"
                           onClick={() => window.open(selectedEvent.recording!, '_blank')}
                         >
-                          Ver grabación
+                          View Recording
                         </Button>
                       </div>
                     )}
@@ -272,14 +272,14 @@ export default function Calendar() {
                       }}
                     >
                       <User className="h-4 w-4 mr-2" />
-                      Ver Datos del Cliente
+                      View Client Data
                     </Button>
                   </div>
                 </div>
               ) : (
                 <div className="text-center text-neutral-500 py-8">
                   <Phone className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>Selecciona un evento del calendario para ver los detalles</p>
+                  <p>Select an event from the calendar to view details</p>
                 </div>
               )}
             </CardContent>
