@@ -140,11 +140,19 @@ export function ClientTable({ clients }: ClientTableProps) {
   };
 
   const formatDate = (dateString: string | null): Date | undefined => {
-    return dateString ? new Date(dateString) : undefined;
+    if (!dateString) return undefined;
+    // Parse the date string and create a date in local timezone to avoid off-by-one errors
+    const [year, month, day] = dateString.split('-').map(Number);
+    return new Date(year, month - 1, day);
   };
 
   const formatDateString = (date: Date | undefined): string | null => {
-    return date ? date.toISOString().split('T')[0] : null;
+    if (!date) return null;
+    // Format date ensuring we use local timezone values
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   };
 
   const getFileCount = (filesJson: string | null): number => {
@@ -479,7 +487,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                     </td>
 
                     {/* Revenue */}
-                    <td className="py-3 px-4 w-48">
+                    <td className="py-3 px-4 w-64">
                       <div className="relative w-full">
                         <span className="absolute left-3 top-3 text-gray-500 text-sm">$</span>
                         <Input
@@ -487,7 +495,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                           value={client.revenue || "0"}
                           onChange={(e) => handleUpdateClient(client.id, "revenue", e.target.value)}
                           placeholder="0"
-                          className="w-full pl-8 pr-3 py-2 text-sm h-10"
+                          className="w-full pl-8 pr-3 py-2 text-sm h-10 min-w-[200px]"
                         />
                       </div>
                     </td>
