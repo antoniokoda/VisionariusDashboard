@@ -478,7 +478,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                           size="icon"
                           onClick={() => openConversation(client.id)}
                           className="text-blue-500 hover:text-blue-700 h-8 w-8"
-                          title="Abrir conversación"
+                          title="Open conversation"
                         >
                           <MessageCircle className="h-4 w-4" />
                         </Button>
@@ -487,7 +487,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                           size="icon"
                           onClick={() => handleDeleteClient(client.id)}
                           className="text-red-500 hover:text-red-700 h-8 w-8"
-                          title="Eliminar cliente"
+                          title="Delete client"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -518,7 +518,7 @@ export function ClientTable({ clients }: ClientTableProps) {
           isOpen={conversationOpen}
           onClose={() => setConversationOpen(false)}
           clientId={selectedClientId}
-          clientName={localClients.find(c => c.id === selectedClientId)?.name || "Cliente"}
+          clientName={localClients.find(c => c.id === selectedClientId)?.name || "Client"}
         />
       )}
     </div>

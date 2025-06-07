@@ -167,7 +167,7 @@ export function ClientConversation({
               <textarea
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
-                placeholder="Escribe una nota sobre este cliente..."
+                placeholder="Write a note about this client..."
                 className="w-full min-h-[40px] max-h-[120px] p-3 border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-primary/20"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
