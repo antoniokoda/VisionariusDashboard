@@ -90,7 +90,8 @@ export function ClientTable({ clients }: ClientTableProps) {
 
   const handleAddClient = () => {
     const newClient: InsertClient = {
-      name: "",
+      name: "New Sales Opportunity",
+      contacts: "[]",
       proposalStatus: "N/A",
       revenue: "0",
       files: "[]",

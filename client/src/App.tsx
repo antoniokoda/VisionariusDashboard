@@ -43,7 +43,7 @@ function Header() {
                 className="flex items-center space-x-2"
               >
                 <Table className="h-4 w-4" />
-                <span>Data Entry</span>
+                <span>Sales Opportunities</span>
               </Button>
             </Link>
             <Link href="/calendar">
