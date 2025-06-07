@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ChevronLeft, ChevronRight, Phone, ExternalLink, User } from "lucide-react";
+import { ChevronLeft, ChevronRight, Phone, ExternalLink, User, Clock } from "lucide-react";
 import { type CalendarEvent } from "@shared/schema";
 
 export default function Calendar() {

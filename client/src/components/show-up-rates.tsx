@@ -10,7 +10,7 @@ export function ShowUpRatesComponent({ showUpRates }: ShowUpRatesProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Show-Up Rates</CardTitle>
+        <CardTitle>Tasas de Asistencia</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

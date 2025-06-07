@@ -124,10 +124,34 @@ export class MemStorage implements IStorage {
   async createClient(insertClient: InsertClient): Promise<Client> {
     const id = this.currentClientId++;
     const client: Client = {
-      ...insertClient,
       id,
-      createdAt: new Date().toISOString().split('T')[0], // YYYY-MM-DD format
+      name: insertClient.name || "",
+      discovery1Date: insertClient.discovery1Date || null,
+      discovery1Duration: insertClient.discovery1Duration || null,
+      discovery1Recording: insertClient.discovery1Recording || null,
+      discovery2Date: insertClient.discovery2Date || null,
+      discovery2Duration: insertClient.discovery2Duration || null,
+      discovery2Recording: insertClient.discovery2Recording || null,
+      discovery3Date: insertClient.discovery3Date || null,
+      discovery3Duration: insertClient.discovery3Duration || null,
+      discovery3Recording: insertClient.discovery3Recording || null,
+      closing1Date: insertClient.closing1Date || null,
+      closing1Duration: insertClient.closing1Duration || null,
+      closing1Recording: insertClient.closing1Recording || null,
+      closing2Date: insertClient.closing2Date || null,
+      closing2Duration: insertClient.closing2Duration || null,
+      closing2Recording: insertClient.closing2Recording || null,
+      closing3Date: insertClient.closing3Date || null,
+      closing3Duration: insertClient.closing3Duration || null,
+      closing3Recording: insertClient.closing3Recording || null,
+      proposalStatus: insertClient.proposalStatus || "N/A",
+      revenue: insertClient.revenue || "0",
+      isWon: insertClient.isWon || false,
+      isLost: insertClient.isLost || false,
+      files: insertClient.files || "[]",
+      notes: insertClient.notes || null,
       conversation: insertClient.conversation || "[]",
+      createdAt: new Date().toISOString().split('T')[0],
     };
     this.clients.set(id, client);
     return client;
