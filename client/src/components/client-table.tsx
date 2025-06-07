@@ -35,6 +35,7 @@ export function ClientTable({ clients }: ClientTableProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/clients"] });
       queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/calendar"] });
     },
   });
 
@@ -46,6 +47,7 @@ export function ClientTable({ clients }: ClientTableProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/clients"] });
       queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/calendar"] });
     },
   });
 
@@ -56,6 +58,7 @@ export function ClientTable({ clients }: ClientTableProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/clients"] });
       queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/calendar"] });
     },
   });
 
@@ -442,17 +445,23 @@ export function ClientTable({ clients }: ClientTableProps) {
                     </td>
 
                     {/* Revenue */}
-                    <td className="py-3 px-4 w-32">
+                    <td className="py-3 px-4 w-40">
                       <div className="relative w-full">
-                        <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">€</span>
-                        <Input
-                          type="number"
+                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">$</span>
+                        <textarea
                           value={client.revenue || "0"}
                           onChange={(e) => handleUpdateClient(client.id, "revenue", e.target.value)}
                           placeholder="0"
-                          className="pl-6 text-sm h-10 w-full"
-                          min="0"
-                          step="100"
+                          className="w-full min-h-[40px] max-h-[60px] pl-8 pr-3 py-2 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none overflow-hidden text-sm"
+                          style={{ 
+                            height: 'auto',
+                            minHeight: '40px'
+                          }}
+                          onInput={(e) => {
+                            const target = e.target as HTMLTextAreaElement;
+                            target.style.height = 'auto';
+                            target.style.height = Math.min(target.scrollHeight, 60) + 'px';
+                          }}
                         />
                       </div>
                     </td>
