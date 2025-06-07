@@ -243,6 +243,32 @@ export function ClientTable({ clients }: ClientTableProps) {
                       </div>
                     </td>
 
+                    {/* Email */}
+                    <td className="py-3 px-4 w-36">
+                      <div className="w-full">
+                        <Input
+                          type="email"
+                          value={client.email || ""}
+                          onChange={(e) => handleUpdateClient(client.id, "email", e.target.value)}
+                          placeholder="client@company.com"
+                          className="w-full text-sm h-10 border-none bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20"
+                        />
+                      </div>
+                    </td>
+
+                    {/* Phone */}
+                    <td className="py-3 px-4 w-32">
+                      <div className="w-full">
+                        <Input
+                          type="tel"
+                          value={client.phone || ""}
+                          onChange={(e) => handleUpdateClient(client.id, "phone", e.target.value)}
+                          placeholder="+1 (555) 123-4567"
+                          className="w-full text-sm h-10 border-none bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20"
+                        />
+                      </div>
+                    </td>
+
                     {/* Discovery 1 */}
                     <td className="py-3 px-4">
                       <div className="space-y-1">
