@@ -13,7 +13,7 @@ export default function Dashboard() {
   const [selectedPeriod, setSelectedPeriod] = useState("all");
 
   const { data: dashboardData, isLoading } = useQuery<DashboardData>({
-    queryKey: ["/api/dashboard"],
+    queryKey: ["/api/dashboard", selectedPeriod],
     refetchInterval: 30000, // Refresh every 30 seconds
   });
 

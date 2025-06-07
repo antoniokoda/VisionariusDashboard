@@ -141,10 +141,10 @@ export function ClientTable({ clients }: ClientTableProps) {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-neutral-900">Entrada de Datos de Clientes</h2>
+        <h2 className="text-2xl font-bold text-neutral-900">Client Data Entry</h2>
         <Button onClick={handleAddClient} className="flex items-center space-x-2">
           <Plus className="h-4 w-4" />
-          <span>Agregar Nuevo Cliente</span>
+          <span>Add New Client</span>
         </Button>
       </div>
 
@@ -154,17 +154,17 @@ export function ClientTable({ clients }: ClientTableProps) {
             <table className="w-full">
               <thead className="bg-gray-50 border-b">
                 <tr>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-40">Nombre del Cliente</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Descubrimiento 1</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Descubrimiento 2</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Descubrimiento 3</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Cierre 1</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Cierre 2</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Cierre 3</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-24">Propuesta</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Ingresos</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-20">Archivos</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Acciones</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-40">Client Name</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Discovery 1</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Discovery 2</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Discovery 3</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Closing 1</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Closing 2</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Closing 3</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-24">Proposal</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Revenue</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-20">Files</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -175,7 +175,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                         <textarea
                           value={client.name}
                           onChange={(e) => handleUpdateClient(client.id, "name", e.target.value)}
-                          placeholder="Ingresa el nombre del cliente..."
+                          placeholder="Enter client name..."
                           className="w-full min-h-[40px] max-h-[80px] border-none bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none overflow-hidden text-sm"
                           style={{ 
                             height: 'auto',
@@ -190,7 +190,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                         {saveFeedback[client.id] && (
                           <div className="text-xs text-green-600 mt-1 flex items-center">
                             <Check className="h-3 w-3 mr-1" />
-                            Guardado
+                            Saved
                           </div>
                         )}
                       </div>

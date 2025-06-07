@@ -29,7 +29,16 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const res = await fetch(queryKey[0] as string, {
+    const [baseUrl, ...params] = queryKey as [string, ...unknown[]];
+    let url = baseUrl;
+
+    // Handle dashboard period filtering
+    if (baseUrl === "/api/dashboard" && params.length > 0 && params[0]) {
+      const period = params[0] as string;
+      url = `${baseUrl}?period=${encodeURIComponent(period)}`;
+    }
+
+    const res = await fetch(url, {
       credentials: "include",
     });
 

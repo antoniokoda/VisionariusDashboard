@@ -75,12 +75,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get dashboard data
   app.get("/api/dashboard", async (req, res) => {
     try {
-      const { year, month } = req.query;
-      let clients;
-      
-      if (year && month) {
-        clients = await storage.getClientsByMonth(parseInt(year as string), parseInt(month as string));
+      const period = req.query.period as string;
+      let clients: Client[];
+
+      if (period && period !== "all") {
+        // Parse period (e.g., "2024-03" -> year: 2024, month: 3)
+        const [yearStr, monthStr] = period.split("-");
+        const year = parseInt(yearStr);
+        const month = parseInt(monthStr);
+        
+        if (!isNaN(year) && !isNaN(month)) {
+          clients = await storage.getClientsByMonth(year, month);
+        } else {
+          clients = await storage.getAllClients();
+        }
       } else {
+        // "all" or no period specified - get all clients
         clients = await storage.getAllClients();
       }
 
