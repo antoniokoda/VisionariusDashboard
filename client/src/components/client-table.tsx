@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { FileUploadModal } from "./file-upload-modal";
 import { ClientConversation } from "./client-conversation";
+import { ContactsModal } from "./contacts-modal";
 import { DatePicker } from "./ui/date-picker";
 import { Plus, Trash2, ExternalLink, Folder, Check, MessageCircle, Users } from "lucide-react";
 import { type Client, type InsertClient, type UpdateClient } from "@shared/schema";
@@ -19,6 +20,7 @@ export function ClientTable({ clients }: ClientTableProps) {
   const [localClients, setLocalClients] = useState<Client[]>(clients);
   const [fileModalOpen, setFileModalOpen] = useState(false);
   const [conversationOpen, setConversationOpen] = useState(false);
+  const [contactsModalOpen, setContactsModalOpen] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState<number | null>(null);
   const [saveFeedback, setSaveFeedback] = useState<{ [key: number]: boolean }>({});
   const [highlightedClientId, setHighlightedClientId] = useState<number | null>(null);
@@ -129,6 +131,10 @@ export function ClientTable({ clients }: ClientTableProps) {
     handleUpdateClient(clientId, "files", JSON.stringify(files));
   };
 
+  const handleContactsUpdate = (clientId: number, contacts: string) => {
+    handleUpdateClient(clientId, "contacts", contacts);
+  };
+
   const openFileModal = (clientId: number) => {
     setSelectedClientId(clientId);
     setFileModalOpen(true);
@@ -137,6 +143,11 @@ export function ClientTable({ clients }: ClientTableProps) {
   const openConversation = (clientId: number) => {
     setSelectedClientId(clientId);
     setConversationOpen(true);
+  };
+
+  const openContactsModal = (clientId: number) => {
+    setSelectedClientId(clientId);
+    setContactsModalOpen(true);
   };
 
   const formatDate = (dateString: string | null): Date | undefined => {
@@ -176,10 +187,10 @@ export function ClientTable({ clients }: ClientTableProps) {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-neutral-900">Client Data Entry</h2>
+        <h2 className="text-2xl font-bold text-neutral-900">Sales Opportunity Management</h2>
         <Button onClick={handleAddClient} className="flex items-center space-x-2">
           <Plus className="h-4 w-4" />
-          <span>Add New Client</span>
+          <span>Add New Opportunity</span>
         </Button>
       </div>
 
@@ -519,6 +530,15 @@ export function ClientTable({ clients }: ClientTableProps) {
                         <Button
                           variant="ghost"
                           size="icon"
+                          onClick={() => openContactsModal(client.id)}
+                          className="text-green-500 hover:text-green-700 h-8 w-8"
+                          title="Manage contacts"
+                        >
+                          <Users className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => openConversation(client.id)}
                           className="text-blue-500 hover:text-blue-700 h-8 w-8"
                           title="Open conversation"
@@ -530,7 +550,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                           size="icon"
                           onClick={() => handleDeleteClient(client.id)}
                           className="text-red-500 hover:text-red-700 h-8 w-8"
-                          title="Delete client"
+                          title="Delete opportunity"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -562,6 +582,18 @@ export function ClientTable({ clients }: ClientTableProps) {
           onClose={() => setConversationOpen(false)}
           clientId={selectedClientId}
           clientName={localClients.find(c => c.id === selectedClientId)?.name || "Client"}
+        />
+      )}
+
+      {/* Contacts Management Modal */}
+      {selectedClientId && (
+        <ContactsModal
+          isOpen={contactsModalOpen}
+          onClose={() => setContactsModalOpen(false)}
+          opportunityId={selectedClientId}
+          opportunityName={localClients.find(c => c.id === selectedClientId)?.name || "Opportunity"}
+          currentContacts={localClients.find(c => c.id === selectedClientId)?.contacts || "[]"}
+          onContactsUpdate={(contacts) => handleContactsUpdate(selectedClientId, contacts)}
         />
       )}
     </div>
