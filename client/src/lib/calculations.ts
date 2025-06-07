@@ -22,12 +22,18 @@ export function calculateKPIs(clients: Client[]): KPIData {
 
   const avgSalesCycle = calculateAverageSalesCycle(clients);
 
+  const wonClientsWithRevenue = clients.filter(client => client.isWon && parseFloat(client.revenue || "0") > 0);
+  const avgDealSize = wonClientsWithRevenue.length > 0 
+    ? wonClientsWithRevenue.reduce((sum, client) => sum + parseFloat(client.revenue || "0"), 0) / wonClientsWithRevenue.length
+    : 0;
+
   return {
     cashCollected,
     closingRate: Math.round(closingRate * 10) / 10,
     proposalsPitched: totalProposalsPitched,
     avgSalesCycle,
     totalCalls,
+    avgDealSize: Math.round(avgDealSize),
   };
 }
 

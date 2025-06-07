@@ -43,8 +43,9 @@ export const clients = pgTable("clients", {
   // File storage (JSON array of file URLs/names)
   files: text("files").default("[]"),
   
-  // Notes
+  // Notes and conversation
   notes: text("notes"),
+  conversation: text("conversation").default("[]"), // JSON array of conversation messages
   
   // Created date for filtering
   createdAt: date("created_at").defaultNow(),
@@ -68,6 +69,7 @@ export interface KPIData {
   proposalsPitched: number;
   avgSalesCycle: number;
   totalCalls: number;
+  avgDealSize: number;
 }
 
 export interface ShowUpRates {
@@ -133,3 +135,26 @@ export const insertUserSchema = createInsertSchema(users).pick({
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
+
+// Calendar event interface
+export interface CalendarEvent {
+  id: string;
+  title: string;
+  clientId: number;
+  clientName: string;
+  date: string;
+  type: "discovery1" | "discovery2" | "discovery3" | "closing1" | "closing2" | "closing3";
+  duration?: number;
+  recording?: string;
+}
+
+// Conversation message interface
+export interface ConversationMessage {
+  id: string;
+  userId: string;
+  userName: string;
+  message: string;
+  type: "text" | "audio" | "file";
+  timestamp: string;
+  fileUrl?: string;
+}

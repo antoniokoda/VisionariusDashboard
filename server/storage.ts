@@ -49,6 +49,7 @@ export class MemStorage implements IStorage {
         revenue: "32500",
         isWon: true,
         files: JSON.stringify(["proposal_techcorp.pdf", "contract_signed.pdf"]),
+        conversation: JSON.stringify([]),
       },
       {
         name: "Global Industries Inc",
@@ -126,6 +127,7 @@ export class MemStorage implements IStorage {
       ...insertClient,
       id,
       createdAt: new Date().toISOString().split('T')[0], // YYYY-MM-DD format
+      conversation: insertClient.conversation || "[]",
     };
     this.clients.set(id, client);
     return client;
