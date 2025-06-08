@@ -9,6 +9,7 @@ import { ClientConversation } from "./client-conversation";
 import { ContactsModal } from "./contacts-modal";
 import { DatePicker } from "./ui/date-picker";
 import { Plus, Trash2, ExternalLink, Folder, Check, MessageCircle, Users } from "lucide-react";
+import { MediaEffects } from "./media-effects";
 import { type Client, type InsertClient, type UpdateClient } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -24,6 +25,8 @@ export function ClientTable({ clients }: ClientTableProps) {
   const [selectedClientId, setSelectedClientId] = useState<number | null>(null);
   const [saveFeedback, setSaveFeedback] = useState<{ [key: number]: boolean }>({});
   const [highlightedClientId, setHighlightedClientId] = useState<number | null>(null);
+  const [playMediaEffect, setPlayMediaEffect] = useState(false);
+  const [currentMediaType, setCurrentMediaType] = useState<'won' | 'lost' | 'pitched' | null>(null);
   const tableRef = useRef<HTMLTableElement>(null);
   const queryClient = useQueryClient();
 
@@ -37,7 +40,7 @@ export function ClientTable({ clients }: ClientTableProps) {
     if (highlightId && clients.length > 0) {
       const clientId = parseInt(highlightId);
       setHighlightedClientId(clientId);
-      
+
       // Scroll to the highlighted client row after a short delay
       setTimeout(() => {
         const row = document.querySelector(`[data-client-id="${clientId}"]`);
@@ -52,6 +55,22 @@ export function ClientTable({ clients }: ClientTableProps) {
       }, 100);
     }
   }, [clients]);
+
+  // Media effects configuration
+  const mediaEffects = {
+    won: {
+      audio: "/sounds/celebration.mp3", // Add your celebration sound
+      video: "/videos/confetti.mp4", // Add your celebration video
+    },
+    lost: {
+      audio: "/sounds/sad-trombone.mp3", // Add your sad sound
+      video: "/videos/rain.mp4", // Add your sad video
+    },
+    pitched: {
+      audio: "/sounds/notification.mp3", // Add your notification sound
+      video: "/videos/presentation.mp4", // Add your presentation video
+    }
+  };
 
   const createClientMutation = useMutation({
     mutationFn: async (client: InsertClient) => {
@@ -185,8 +204,57 @@ export function ClientTable({ clients }: ClientTableProps) {
     }
   };
 
+  const handleStatusChange = (clientId: number, field: string, value: string) => {
+    const updatedClients = localClients.map(client => 
+      client.id === clientId 
+        ? { 
+            ...client, 
+            [field]: value,
+            isWon: value === "Won",
+            isLost: value === "Lost"
+          }
+        : client
+    );
+    setLocalClients(updatedClients);
+
+    // Trigger media effects for status changes
+    if (field === 'dealStatus') {
+      if (value === 'Won') {
+        setCurrentMediaType('won');
+        setPlayMediaEffect(true);
+      } else if (value === 'Lost') {
+        setCurrentMediaType('lost');
+        setPlayMediaEffect(true);
+      }
+    } else if (field === 'proposalStatus' && value === 'Pitched') {
+        setCurrentMediaType('pitched');
+        setPlayMediaEffect(true);
+    }
+
+    // Update the client
+    const clientToUpdate = updatedClients.find(c => c.id === clientId);
+    if (clientToUpdate) {
+      updateClientMutation.mutate({ 
+        id: clientId, 
+        data: { 
+          [field]: value,
+          isWon: value === "Won",
+          isLost: value === "Lost"
+        } 
+      });
+    }
+  };
+
   return (
     <div className="space-y-6">
+      {playMediaEffect && currentMediaType && (
+        <MediaEffects
+          audio={mediaEffects[currentMediaType]?.audio}
+          video={mediaEffects[currentMediaType]?.video}
+          onMediaEnded={() => setPlayMediaEffect(false)}
+        />
+      )}
+
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-neutral-900">Sales Opportunity Management</h2>
         <Button onClick={handleAddClient} className="flex items-center space-x-2">
@@ -487,7 +555,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                     <td className="py-3 px-4">
                       <Select
                         value={client.proposalStatus || "N/A"}
-                        onValueChange={(value) => handleUpdateClient(client.id, "proposalStatus", value)}
+                        onValueChange={(value) => handleStatusChange(client.id, "proposalStatus", value)}
                       >
                         <SelectTrigger className="text-sm h-8">
                           <SelectValue />
@@ -532,7 +600,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                     <td className="py-3 px-4">
                       <Select
                         value={client.dealStatus || "Open"}
-                        onValueChange={(value) => handleUpdateClient(client.id, "dealStatus", value)}
+                        onValueChange={(value) => handleStatusChange(client.id, "dealStatus", value)}
                       >
                         <SelectTrigger className="text-sm h-8">
                           <SelectValue />
