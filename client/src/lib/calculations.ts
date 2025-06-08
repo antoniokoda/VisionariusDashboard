@@ -26,7 +26,7 @@ export function calculateKPIs(clients: Client[], previousMonthClients?: Client[]
 
   const avgSalesCycle = calculateAverageSalesCycle(clients);
 
-  const wonClientsWithRevenue = clients.filter(client => client.isWon && parseFloat(client.revenue || "0") > 0);
+  const wonClientsWithRevenue = clients.filter(client => client.dealStatus === "Won" && parseFloat(client.revenue || "0") > 0);
   const avgDealSize = wonClientsWithRevenue.length > 0 
     ? wonClientsWithRevenue.reduce((sum, client) => sum + parseFloat(client.revenue || "0"), 0) / wonClientsWithRevenue.length
     : 0;

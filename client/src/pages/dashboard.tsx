@@ -104,7 +104,16 @@ export default function Dashboard() {
       </div>
 
       {/* Top-Level KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-6">
+        <KPICard
+          title="Total Revenue"
+          value={formatCurrency(dashboardData.kpis.totalRevenue)}
+          icon={TrendingUp}
+          iconColor="bg-emerald-500"
+          valueColor="text-emerald-600"
+          change={formatPercentageChange(dashboardData.kpis.totalRevenueChange)}
+        />
+
         <KPICard
           title="Cash Collected"
           value={formatCurrency(dashboardData.kpis.cashCollected)}

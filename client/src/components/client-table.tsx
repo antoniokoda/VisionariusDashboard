@@ -210,6 +210,8 @@ export function ClientTable({ clients }: ClientTableProps) {
                   <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Closing 3</th>
                   <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-24">Proposal</th>
                   <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Revenue</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Cash Collected</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-24">Deal Status</th>
                   <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-20">Files</th>
                   <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Actions</th>
                 </tr>
@@ -510,6 +512,37 @@ export function ClientTable({ clients }: ClientTableProps) {
                           className="w-full pl-8 pr-3 py-2 text-sm h-10 min-w-[150px]"
                         />
                       </div>
+                    </td>
+
+                    {/* Cash Collected */}
+                    <td className="py-3 px-4 w-48">
+                      <div className="relative w-full">
+                        <span className="absolute left-3 top-3 text-gray-500 text-sm">$</span>
+                        <Input
+                          type="text"
+                          value={client.cashCollected || "0"}
+                          onChange={(e) => handleUpdateClient(client.id, "cashCollected", e.target.value)}
+                          placeholder="0"
+                          className="w-full pl-8 pr-3 py-2 text-sm h-10 min-w-[150px]"
+                        />
+                      </div>
+                    </td>
+
+                    {/* Deal Status */}
+                    <td className="py-3 px-4">
+                      <Select
+                        value={client.dealStatus || "Open"}
+                        onValueChange={(value) => handleUpdateClient(client.id, "dealStatus", value)}
+                      >
+                        <SelectTrigger className="text-sm h-8">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Open">Open</SelectItem>
+                          <SelectItem value="Won">Won</SelectItem>
+                          <SelectItem value="Lost">Lost</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </td>
 
                     {/* Files */}
