@@ -15,23 +15,28 @@ function Header() {
   const [location] = useLocation();
 
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <img src={logoPath} alt="Visionarius Logo" className="w-8 h-8" />
-              <h1 className="text-xl font-bold text-neutral-900">Visionarius Agency</h1>
+    <header className="glass border-b border-border/30 sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-3">
+              <img src={logoPath} alt="Visionarius Logo" className="w-10 h-10 rounded-xl shadow-apple" />
+              <div>
+                <h1 className="text-title font-semibold text-foreground tracking-tight">Visionarius Agency</h1>
+                <p className="text-caption text-muted-foreground">Sales Performance Analytics</p>
+              </div>
             </div>
-            <span className="text-neutral-500">|</span>
-            <span className="text-neutral-600 font-medium">Sales Performance</span>
           </div>
 
-          <nav className="flex space-x-4">
+          <nav className="flex space-x-2">
             <Link href="/">
               <Button
                 variant={location === "/" ? "default" : "ghost"}
-                className="flex items-center space-x-2"
+                className={`apple-button flex items-center space-x-2.5 px-4 py-2.5 rounded-xl text-body font-medium ${
+                  location === "/" 
+                    ? "bg-primary text-primary-foreground shadow-apple" 
+                    : "hover:bg-card/50"
+                }`}
               >
                 <BarChart3 className="h-4 w-4" />
                 <span>Dashboard</span>
@@ -40,7 +45,11 @@ function Header() {
             <Link href="/data-entry">
               <Button
                 variant={location === "/data-entry" ? "default" : "ghost"}
-                className="flex items-center space-x-2"
+                className={`apple-button flex items-center space-x-2.5 px-4 py-2.5 rounded-xl text-body font-medium ${
+                  location === "/data-entry" 
+                    ? "bg-primary text-primary-foreground shadow-apple" 
+                    : "hover:bg-card/50"
+                }`}
               >
                 <Table className="h-4 w-4" />
                 <span>Sales Opportunities</span>
@@ -49,7 +58,11 @@ function Header() {
             <Link href="/calendar">
               <Button
                 variant={location === "/calendar" ? "default" : "ghost"}
-                className="flex items-center space-x-2"
+                className={`apple-button flex items-center space-x-2.5 px-4 py-2.5 rounded-xl text-body font-medium ${
+                  location === "/calendar" 
+                    ? "bg-primary text-primary-foreground shadow-apple" 
+                    : "hover:bg-card/50"
+                }`}
               >
                 <CalendarIcon className="h-4 w-4" />
                 <span>Calendar</span>
