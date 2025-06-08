@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -29,6 +29,7 @@ export function ClientTable({ clients }: ClientTableProps) {
   const [currentMediaType, setCurrentMediaType] = useState<'won' | 'lost' | 'pitched' | null>(null);
   const tableRef = useRef<HTMLTableElement>(null);
   const queryClient = useQueryClient();
+  const debounceTimers = useRef<{ [key: string]: NodeJS.Timeout }>({});
 
   useEffect(() => {
     setLocalClients(clients);
@@ -159,7 +160,7 @@ export function ClientTable({ clients }: ClientTableProps) {
     createClientMutation.mutate(newClient);
   };
 
-  const handleUpdateClient = (id: number, field: keyof UpdateClient, value: any) => {
+  const handleUpdateClient = useCallback((id: number, field: keyof UpdateClient, value: any) => {
     // Update local state immediately for responsive UI
     setLocalClients(prev => 
       prev.map(client => 
@@ -167,10 +168,28 @@ export function ClientTable({ clients }: ClientTableProps) {
       )
     );
 
-    // Immediate server update with optimistic UI
-    updateClientMutation.mutate({ id, data: { [field]: value } });
-    showSaveFeedback(id);
-  };
+    // Clear existing debounce timer for this field
+    const timerKey = `${id}-${field}`;
+    if (debounceTimers.current[timerKey]) {
+      clearTimeout(debounceTimers.current[timerKey]);
+    }
+
+    // For text fields like name, use debouncing to avoid excessive API calls
+    const isTextFieldChange = field === 'name' && typeof value === 'string';
+    
+    if (isTextFieldChange) {
+      // Debounce text input updates
+      debounceTimers.current[timerKey] = setTimeout(() => {
+        updateClientMutation.mutate({ id, data: { [field]: value } });
+        showSaveFeedback(id);
+        delete debounceTimers.current[timerKey];
+      }, 800); // 800ms debounce for smoother typing
+    } else {
+      // Immediate update for dropdowns, dates, etc.
+      updateClientMutation.mutate({ id, data: { [field]: value } });
+      showSaveFeedback(id);
+    }
+  }, [updateClientMutation]);
 
   const showSaveFeedback = (clientId: number) => {
     setSaveFeedback(prev => ({ ...prev, [clientId]: true }));

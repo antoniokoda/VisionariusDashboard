@@ -26,7 +26,14 @@ export function ClientConversation({
   clientName 
 }: ClientConversationProps) {
   const [newMessage, setNewMessage] = useState("");
+  const [isRecording, setIsRecording] = useState(false);
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const [recordingDuration, setRecordingDuration] = useState(0);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const recordingTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
@@ -54,16 +61,104 @@ export function ClientConversation({
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim() && !audioBlob && selectedFiles.length === 0) return;
 
     if (!user) return;
     
-    addMessageMutation.mutate({
-      message: newMessage.trim(),
-      userId: user.id,
-      userName: user.username,
-      type: "text"
+    // Send text message
+    if (newMessage.trim()) {
+      addMessageMutation.mutate({
+        message: newMessage.trim(),
+        userId: 1, // Fixed user ID for now
+        userName: "User",
+        type: "text"
+      });
+    }
+
+    // Send audio message
+    if (audioBlob) {
+      const audioUrl = URL.createObjectURL(audioBlob);
+      addMessageMutation.mutate({
+        message: `Voice message (${recordingDuration}s)`,
+        userId: 1,
+        userName: "User",
+        type: "audio",
+        fileUrl: audioUrl
+      });
+      setAudioBlob(null);
+      setRecordingDuration(0);
+    }
+
+    // Send file messages
+    selectedFiles.forEach(file => {
+      const fileUrl = URL.createObjectURL(file);
+      addMessageMutation.mutate({
+        message: `File: ${file.name}`,
+        userId: 1,
+        userName: "User",
+        type: "file",
+        fileUrl: fileUrl
+      });
     });
+
+    setSelectedFiles([]);
+  };
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      const audioChunks: Blob[] = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        audioChunks.push(event.data);
+      };
+
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+        setAudioBlob(audioBlob);
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      mediaRecorderRef.current = mediaRecorder;
+      mediaRecorder.start();
+      setIsRecording(true);
+      setRecordingDuration(0);
+
+      // Start timer
+      recordingTimerRef.current = setInterval(() => {
+        setRecordingDuration(prev => prev + 1);
+      }, 1000);
+    } catch (error) {
+      console.error('Error accessing microphone:', error);
+      alert('Unable to access microphone. Please check permissions.');
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+      
+      if (recordingTimerRef.current) {
+        clearInterval(recordingTimerRef.current);
+        recordingTimerRef.current = null;
+      }
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    setSelectedFiles(prev => [...prev, ...files]);
+  };
+
+  const removeFile = (index: number) => {
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const removeAudio = () => {
+    setAudioBlob(null);
+    setRecordingDuration(0);
   };
 
   const formatMessageTime = (timestamp: string): string => {
@@ -160,6 +255,47 @@ export function ClientConversation({
           )}
         </ScrollArea>
 
+        {/* Attachments Preview */}
+        {(selectedFiles.length > 0 || audioBlob) && (
+          <div className="border-t pt-3 pb-3 space-y-2">
+            {/* Audio preview */}
+            {audioBlob && (
+              <div className="flex items-center justify-between bg-blue-50 p-2 rounded">
+                <div className="flex items-center space-x-2">
+                  <Mic className="h-4 w-4 text-blue-500" />
+                  <span className="text-sm text-blue-700">Voice message ({recordingDuration}s)</span>
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={removeAudio}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
+            
+            {/* Files preview */}
+            {selectedFiles.map((file, index) => (
+              <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded">
+                <div className="flex items-center space-x-2">
+                  <Paperclip className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm text-gray-700">{file.name}</span>
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => removeFile(index)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Message Input */}
         <div className="border-t pt-4">
           <form onSubmit={handleSendMessage} className="flex items-end space-x-2">
@@ -178,6 +314,14 @@ export function ClientConversation({
               />
             </div>
             
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileSelect}
+              multiple
+              className="hidden"
+            />
+            
             <div className="flex space-x-1">
               <Button
                 type="button"
@@ -185,25 +329,27 @@ export function ClientConversation({
                 size="icon"
                 className="h-10 w-10"
                 title="Adjuntar archivo"
+                onClick={() => fileInputRef.current?.click()}
               >
                 <Paperclip className="h-4 w-4" />
               </Button>
               
               <Button
                 type="button"
-                variant="outline"
+                variant={isRecording ? "destructive" : "outline"}
                 size="icon"
                 className="h-10 w-10"
-                title="Grabar audio"
+                title={isRecording ? "Detener grabación" : "Grabar audio"}
+                onClick={isRecording ? stopRecording : startRecording}
               >
-                <Mic className="h-4 w-4" />
+                <Mic className={`h-4 w-4 ${isRecording ? 'animate-pulse' : ''}`} />
               </Button>
               
               <Button
                 type="submit"
                 size="icon"
                 className="h-10 w-10"
-                disabled={!newMessage.trim() || addMessageMutation.isPending}
+                disabled={(!newMessage.trim() && !audioBlob && selectedFiles.length === 0) || addMessageMutation.isPending}
               >
                 <Send className="h-4 w-4" />
               </Button>
