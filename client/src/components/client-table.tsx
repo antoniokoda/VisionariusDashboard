@@ -28,11 +28,9 @@ export function ClientTable({ clients }: ClientTableProps) {
   const [highlightedClientId, setHighlightedClientId] = useState<number | null>(null);
   const [playMediaEffect, setPlayMediaEffect] = useState(false);
   const [currentMediaType, setCurrentMediaType] = useState<'won' | 'lost' | 'pitched' | null>(null);
-  const [showManageOptions, setShowManageOptions] = useState(false);
   const [customLeadSources, setCustomLeadSources] = useState<string[]>([]);
   const [customSalespeople, setCustomSalespeople] = useState<string[]>([]);
-  const [newLeadSource, setNewLeadSource] = useState("");
-  const [newSalesperson, setNewSalesperson] = useState("");
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<{type: 'lead' | 'salesperson', item: string} | null>(null);
   const tableRef = useRef<HTMLTableElement>(null);
 
   // Predefined options for dropdowns
@@ -82,20 +80,18 @@ export function ClientTable({ clients }: ClientTableProps) {
     localStorage.setItem('customSalespeople', JSON.stringify(customSalespeople));
   };
 
-  const addLeadSource = () => {
-    if (newLeadSource.trim() && !leadSourceOptions.includes(newLeadSource.trim())) {
-      const updated = [...customLeadSources, newLeadSource.trim()];
+  const addLeadSource = (newSource: string) => {
+    if (newSource.trim() && !leadSourceOptions.includes(newSource.trim())) {
+      const updated = [...customLeadSources, newSource.trim()];
       setCustomLeadSources(updated);
-      setNewLeadSource("");
       localStorage.setItem('customLeadSources', JSON.stringify(updated));
     }
   };
 
-  const addSalesperson = () => {
-    if (newSalesperson.trim() && !salespersonOptions.includes(newSalesperson.trim())) {
-      const updated = [...customSalespeople, newSalesperson.trim()];
+  const addSalesperson = (newPerson: string) => {
+    if (newPerson.trim() && !salespersonOptions.includes(newPerson.trim())) {
+      const updated = [...customSalespeople, newPerson.trim()];
       setCustomSalespeople(updated);
-      setNewSalesperson("");
       localStorage.setItem('customSalespeople', JSON.stringify(updated));
     }
   };
@@ -110,6 +106,21 @@ export function ClientTable({ clients }: ClientTableProps) {
     const updated = customSalespeople.filter(p => p !== person);
     setCustomSalespeople(updated);
     localStorage.setItem('customSalespeople', JSON.stringify(updated));
+  };
+
+  const confirmDelete = (type: 'lead' | 'salesperson', item: string) => {
+    setShowDeleteConfirm({ type, item });
+  };
+
+  const handleConfirmDelete = () => {
+    if (showDeleteConfirm) {
+      if (showDeleteConfirm.type === 'lead') {
+        removeLeadSource(showDeleteConfirm.item);
+      } else {
+        removeSalesperson(showDeleteConfirm.item);
+      }
+      setShowDeleteConfirm(null);
+    }
   };
 
   useEffect(() => {
@@ -439,43 +450,33 @@ export function ClientTable({ clients }: ClientTableProps) {
 
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-neutral-900">Sales Opportunity Management</h2>
-        <div className="flex items-center space-x-3">
-          <Button 
-            variant="outline" 
-            onClick={() => setShowManageOptions(true)} 
-            className="flex items-center space-x-2"
-          >
-            <Settings className="h-4 w-4" />
-            <span>Manage Options</span>
-          </Button>
-          <Button onClick={handleAddClient} className="flex items-center space-x-2">
-            <Plus className="h-4 w-4" />
-            <span>Add New Opportunity</span>
-          </Button>
-        </div>
+        <Button onClick={handleAddClient} className="flex items-center space-x-2">
+          <Plus className="h-4 w-4" />
+          <span>Add New Opportunity</span>
+        </Button>
       </div>
 
       <Card>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b">
+              <thead className="bg-gray-100 border-b-2 border-gray-300 sticky top-0 z-10">
                 <tr>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-40">Sales Opportunity</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Lead Source</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Salesperson</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Discovery 1</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Discovery 2</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Discovery 3</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Closing 1</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Closing 2</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Closing 3</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-24">Proposal</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Revenue</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Cash Collected</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-24">Deal Status</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-20">Files</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Actions</th>
+                  <th className="text-left py-4 px-4 font-bold text-gray-800 text-sm w-40 bg-gray-100">Sales Opportunity</th>
+                  <th className="text-left py-4 px-4 font-bold text-gray-800 text-sm w-32 bg-gray-100">Lead Source</th>
+                  <th className="text-left py-4 px-4 font-bold text-gray-800 text-sm w-32 bg-gray-100">Salesperson</th>
+                  <th className="text-left py-4 px-4 font-bold text-gray-800 text-sm w-32 bg-gray-100">Discovery 1</th>
+                  <th className="text-left py-4 px-4 font-bold text-gray-800 text-sm w-32 bg-gray-100">Discovery 2</th>
+                  <th className="text-left py-4 px-4 font-bold text-gray-800 text-sm w-32 bg-gray-100">Discovery 3</th>
+                  <th className="text-left py-4 px-4 font-bold text-gray-800 text-sm w-32 bg-gray-100">Closing 1</th>
+                  <th className="text-left py-4 px-4 font-bold text-gray-800 text-sm w-32 bg-gray-100">Closing 2</th>
+                  <th className="text-left py-4 px-4 font-bold text-gray-800 text-sm w-32 bg-gray-100">Closing 3</th>
+                  <th className="text-left py-4 px-4 font-bold text-gray-800 text-sm w-24 bg-gray-100">Proposal</th>
+                  <th className="text-left py-4 px-4 font-bold text-gray-800 text-sm w-32 bg-gray-100">Revenue</th>
+                  <th className="text-left py-4 px-4 font-bold text-gray-800 text-sm w-32 bg-gray-100">Cash Collected</th>
+                  <th className="text-left py-4 px-4 font-bold text-gray-800 text-sm w-24 bg-gray-100">Deal Status</th>
+                  <th className="text-left py-4 px-4 font-bold text-gray-800 text-sm w-20 bg-gray-100">Files</th>
+                  <th className="text-left py-4 px-4 font-bold text-gray-800 text-sm w-32 bg-gray-100">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -537,34 +538,96 @@ export function ClientTable({ clients }: ClientTableProps) {
                         <td className="py-3 px-4">
                           <Select 
                             value={client.leadSource || "Referrals"} 
-                            onValueChange={(value) => handleUpdateClient(client.id, "leadSource", value)}
+                            onValueChange={(value) => {
+                              if (value.startsWith("__ADD__")) {
+                                const newSource = prompt("Enter new lead source:");
+                                if (newSource) addLeadSource(newSource);
+                              } else {
+                                handleUpdateClient(client.id, "leadSource", value);
+                              }
+                            }}
                           >
                             <SelectTrigger className="h-8 text-xs">
                               <SelectValue placeholder="Select lead source" />
                             </SelectTrigger>
                             <SelectContent>
-                              {leadSourceOptions.map((source) => (
+                              {baseLeadSourceOptions.map((source) => (
                                 <SelectItem key={source} value={source}>
                                   {source}
                                 </SelectItem>
                               ))}
+                              {customLeadSources.map((source) => (
+                                <SelectItem key={source} value={source}>
+                                  <div className="flex items-center justify-between w-full">
+                                    <span>{source}</span>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        confirmDelete('lead', source);
+                                      }}
+                                      className="text-red-500 hover:text-red-700 h-5 w-5 p-0 ml-2"
+                                    >
+                                      <X className="h-3 w-3" />
+                                    </Button>
+                                  </div>
+                                </SelectItem>
+                              ))}
+                              <SelectItem value="__ADD__" className="text-blue-600 font-medium">
+                                <div className="flex items-center">
+                                  <Plus className="h-3 w-3 mr-1" />
+                                  Add New Lead Source...
+                                </div>
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                         </td>
                         <td className="py-3 px-4">
                           <Select 
                             value={client.salesperson || "Unknown"} 
-                            onValueChange={(value) => handleUpdateClient(client.id, "salesperson", value)}
+                            onValueChange={(value) => {
+                              if (value.startsWith("__ADD__")) {
+                                const newPerson = prompt("Enter new salesperson:");
+                                if (newPerson) addSalesperson(newPerson);
+                              } else {
+                                handleUpdateClient(client.id, "salesperson", value);
+                              }
+                            }}
                           >
                             <SelectTrigger className="h-8 text-xs">
                               <SelectValue placeholder="Select salesperson" />
                             </SelectTrigger>
                             <SelectContent>
-                              {salespersonOptions.map((person) => (
+                              {baseSalespersonOptions.map((person) => (
                                 <SelectItem key={person} value={person}>
                                   {person}
                                 </SelectItem>
                               ))}
+                              {customSalespeople.map((person) => (
+                                <SelectItem key={person} value={person}>
+                                  <div className="flex items-center justify-between w-full">
+                                    <span>{person}</span>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        confirmDelete('salesperson', person);
+                                      }}
+                                      className="text-red-500 hover:text-red-700 h-5 w-5 p-0 ml-2"
+                                    >
+                                      <X className="h-3 w-3" />
+                                    </Button>
+                                  </div>
+                                </SelectItem>
+                              ))}
+                              <SelectItem value="__ADD__" className="text-blue-600 font-medium">
+                                <div className="flex items-center">
+                                  <Plus className="h-3 w-3 mr-1" />
+                                  Add New Salesperson...
+                                </div>
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                         </td>
@@ -947,122 +1010,26 @@ export function ClientTable({ clients }: ClientTableProps) {
         />
       )}
 
-      {/* Manage Options Modal */}
-      {showManageOptions && (
+      {/* Delete Confirmation Dialog */}
+      {showDeleteConfirm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-bold">Manage Dropdown Options</h3>
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold mb-4">Confirm Deletion</h3>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete "{showDeleteConfirm.item}"? This action cannot be undone.
+            </p>
+            <div className="flex justify-end space-x-3">
               <Button 
-                variant="ghost" 
-                size="icon"
-                onClick={() => setShowManageOptions(false)}
+                variant="outline" 
+                onClick={() => setShowDeleteConfirm(null)}
               >
-                <X className="h-4 w-4" />
+                Cancel
               </Button>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Lead Sources Management */}
-              <div>
-                <h4 className="text-lg font-semibold mb-3">Lead Sources</h4>
-                
-                {/* Add New Lead Source */}
-                <div className="flex space-x-2 mb-4">
-                  <Input
-                    value={newLeadSource}
-                    onChange={(e) => setNewLeadSource(e.target.value)}
-                    placeholder="Add new lead source"
-                    onKeyDown={(e) => e.key === 'Enter' && addLeadSource()}
-                  />
-                  <Button onClick={addLeadSource} size="sm">
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-
-                {/* Lead Source List */}
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-gray-600">Default Options:</p>
-                  {baseLeadSourceOptions.map((source) => (
-                    <div key={source} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                      <span className="text-sm">{source}</span>
-                      <Badge variant="secondary">Default</Badge>
-                    </div>
-                  ))}
-                  
-                  {customLeadSources.length > 0 && (
-                    <>
-                      <p className="text-sm font-medium text-gray-600 mt-4">Custom Options:</p>
-                      {customLeadSources.map((source) => (
-                        <div key={source} className="flex items-center justify-between p-2 bg-blue-50 rounded">
-                          <span className="text-sm">{source}</span>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => removeLeadSource(source)}
-                            className="text-red-500 hover:text-red-700"
-                          >
-                            <X className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      ))}
-                    </>
-                  )}
-                </div>
-              </div>
-
-              {/* Salespeople Management */}
-              <div>
-                <h4 className="text-lg font-semibold mb-3">Salespeople</h4>
-                
-                {/* Add New Salesperson */}
-                <div className="flex space-x-2 mb-4">
-                  <Input
-                    value={newSalesperson}
-                    onChange={(e) => setNewSalesperson(e.target.value)}
-                    placeholder="Add new salesperson"
-                    onKeyDown={(e) => e.key === 'Enter' && addSalesperson()}
-                  />
-                  <Button onClick={addSalesperson} size="sm">
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-
-                {/* Salesperson List */}
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-gray-600">Default Options:</p>
-                  {baseSalespersonOptions.map((person) => (
-                    <div key={person} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                      <span className="text-sm">{person}</span>
-                      <Badge variant="secondary">Default</Badge>
-                    </div>
-                  ))}
-                  
-                  {customSalespeople.length > 0 && (
-                    <>
-                      <p className="text-sm font-medium text-gray-600 mt-4">Custom Options:</p>
-                      {customSalespeople.map((person) => (
-                        <div key={person} className="flex items-center justify-between p-2 bg-blue-50 rounded">
-                          <span className="text-sm">{person}</span>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => removeSalesperson(person)}
-                            className="text-red-500 hover:text-red-700"
-                          >
-                            <X className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      ))}
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-end space-x-2 mt-6">
-              <Button variant="outline" onClick={() => setShowManageOptions(false)}>
-                Close
+              <Button 
+                variant="destructive" 
+                onClick={handleConfirmDelete}
+              >
+                Delete
               </Button>
             </div>
           </div>
