@@ -387,15 +387,14 @@ export function ClientTable({ clients }: ClientTableProps) {
                 {groupClientsByMonth(localClients).map(([monthKey, monthClients]) => (
                   <React.Fragment key={monthKey}>
                     {/* Month Header */}
-                    <tr className="bg-blue-50 border-b border-blue-200">
-                      <td colSpan={13} className="py-3 px-4">
-                        <div className="flex items-center space-x-2">
-                          <div className="h-1 w-1 bg-blue-500 rounded-full"></div>
-                          <h3 className="text-sm font-semibold text-blue-800">
+                    <tr className="border-b border-gray-200">
+                      <td colSpan={13} className="py-6 px-4">
+                        <div className="flex items-center space-x-4">
+                          <h3 className="text-lg font-bold text-gray-900">
                             {formatMonthHeader(monthKey)}
                           </h3>
-                          <div className="h-px bg-blue-200 flex-1"></div>
-                          <span className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
+                          <div className="h-px bg-gray-300 flex-1"></div>
+                          <span className="text-sm text-gray-600 font-medium">
                             {monthClients.length} {monthClients.length === 1 ? 'opportunity' : 'opportunities'}
                           </span>
                         </div>
