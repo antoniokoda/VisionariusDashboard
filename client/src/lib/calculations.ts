@@ -1,12 +1,16 @@
 import { type Client, type KPIData, type ShowUpRates, type FunnelData, type TimeMetrics, type CallMetrics } from "@shared/schema";
 
 export function calculateKPIs(clients: Client[], previousMonthClients?: Client[]): KPIData {
+  const totalRevenue = clients.reduce((sum, client) => {
+    return sum + (client.dealStatus === "Won" ? parseFloat(client.revenue || "0") : 0);
+  }, 0);
+
   const cashCollected = clients.reduce((sum, client) => {
-    return sum + (client.isWon ? parseFloat(client.revenue || "0") : 0);
+    return sum + parseFloat(client.cashCollected || "0");
   }, 0);
 
   const totalProposalsPitched = clients.filter(client => client.proposalStatus === "Pitched").length;
-  const wonClients = clients.filter(client => client.isWon).length;
+  const wonClients = clients.filter(client => client.dealStatus === "Won").length;
   const closingRate = totalProposalsPitched > 0 ? (wonClients / totalProposalsPitched) * 100 : 0;
 
   const totalCalls = clients.reduce((sum, client) => {
@@ -28,10 +32,14 @@ export function calculateKPIs(clients: Client[], previousMonthClients?: Client[]
     : 0;
 
   // Calculate month-over-month changes if previous month data is provided
-  let cashCollectedChange, closingRateChange, proposalsPitchedChange, avgSalesCycleChange, totalCallsChange, avgDealSizeChange;
+  let totalRevenueChange, cashCollectedChange, closingRateChange, proposalsPitchedChange, avgSalesCycleChange, totalCallsChange, avgDealSizeChange;
   
   if (previousMonthClients) {
     const prevKPIs = calculateKPIsForPeriod(previousMonthClients);
+    
+    totalRevenueChange = prevKPIs.totalRevenue > 0 
+      ? ((totalRevenue - prevKPIs.totalRevenue) / prevKPIs.totalRevenue) * 100 
+      : 0;
     
     cashCollectedChange = prevKPIs.cashCollected > 0 
       ? ((cashCollected - prevKPIs.cashCollected) / prevKPIs.cashCollected) * 100 
@@ -59,6 +67,8 @@ export function calculateKPIs(clients: Client[], previousMonthClients?: Client[]
   }
 
   return {
+    totalRevenue,
+    totalRevenueChange,
     cashCollected,
     cashCollectedChange,
     closingRate: Math.round(closingRate * 10) / 10,
@@ -75,12 +85,16 @@ export function calculateKPIs(clients: Client[], previousMonthClients?: Client[]
 }
 
 function calculateKPIsForPeriod(clients: Client[]): KPIData {
+  const totalRevenue = clients.reduce((sum, client) => {
+    return sum + (client.dealStatus === "Won" ? parseFloat(client.revenue || "0") : 0);
+  }, 0);
+
   const cashCollected = clients.reduce((sum, client) => {
-    return sum + (client.isWon ? parseFloat(client.revenue || "0") : 0);
+    return sum + parseFloat(client.cashCollected || "0");
   }, 0);
 
   const totalProposalsPitched = clients.filter(client => client.proposalStatus === "Pitched").length;
-  const wonClients = clients.filter(client => client.isWon).length;
+  const wonClients = clients.filter(client => client.dealStatus === "Won").length;
   const closingRate = totalProposalsPitched > 0 ? (wonClients / totalProposalsPitched) * 100 : 0;
 
   const totalCalls = clients.reduce((sum, client) => {
@@ -96,12 +110,13 @@ function calculateKPIsForPeriod(clients: Client[]): KPIData {
 
   const avgSalesCycle = calculateAverageSalesCycle(clients);
 
-  const wonClientsWithRevenue = clients.filter(client => client.isWon && parseFloat(client.revenue || "0") > 0);
+  const wonClientsWithRevenue = clients.filter(client => client.dealStatus === "Won" && parseFloat(client.revenue || "0") > 0);
   const avgDealSize = wonClientsWithRevenue.length > 0 
     ? wonClientsWithRevenue.reduce((sum, client) => sum + parseFloat(client.revenue || "0"), 0) / wonClientsWithRevenue.length
     : 0;
 
   return {
+    totalRevenue,
     cashCollected,
     closingRate: Math.round(closingRate * 10) / 10,
     proposalsPitched: totalProposalsPitched,

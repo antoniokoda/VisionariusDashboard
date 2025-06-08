@@ -36,8 +36,10 @@ export const clients = pgTable("clients", {
   // Proposal and revenue
   proposalStatus: text("proposal_status").notNull().default("N/A"), // N/A, Created, Pitched
   revenue: decimal("revenue", { precision: 10, scale: 2 }).default("0"),
+  cashCollected: decimal("cash_collected", { precision: 10, scale: 2 }).default("0"),
   
   // Status tracking
+  dealStatus: text("deal_status", { enum: ["Open", "Won", "Lost"] }).default("Open"),
   isWon: boolean("is_won").default(false),
   isLost: boolean("is_lost").default(false),
   
@@ -65,6 +67,8 @@ export type UpdateClient = z.infer<typeof updateClientSchema>;
 
 // KPI calculation types
 export interface KPIData {
+  totalRevenue: number;
+  totalRevenueChange?: number;
   cashCollected: number;
   cashCollectedChange?: number;
   closingRate: number;
