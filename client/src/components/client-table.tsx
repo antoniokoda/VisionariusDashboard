@@ -565,7 +565,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                           variant="ghost"
                           size="icon"
                           onClick={() => openContactsModal(client.id)}
-                          className="text-green-500 hover:text-green-700 h-8 w-8"
+                          className="text-gray-600 hover:text-gray-800 h-8 w-8"
                           title="Manage contacts"
                         >
                           <Users className="h-4 w-4" />
@@ -574,7 +574,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                           variant="ghost"
                           size="icon"
                           onClick={() => openConversation(client.id)}
-                          className="text-blue-500 hover:text-blue-700 h-8 w-8"
+                          className="text-gray-600 hover:text-gray-800 h-8 w-8"
                           title="Open conversation"
                         >
                           <MessageCircle className="h-4 w-4" />
@@ -583,7 +583,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                           variant="ghost"
                           size="icon"
                           onClick={() => handleDeleteClient(client.id)}
-                          className="text-red-500 hover:text-red-700 h-8 w-8"
+                          className="text-gray-600 hover:text-gray-800 h-8 w-8"
                           title="Delete opportunity"
                         >
                           <Trash2 className="h-4 w-4" />

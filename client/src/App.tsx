@@ -34,8 +34,8 @@ function Header() {
                 variant={location === "/" ? "default" : "ghost"}
                 className={`apple-button flex items-center space-x-2.5 px-4 py-2.5 rounded-xl text-body font-medium ${
                   location === "/" 
-                    ? "bg-primary text-primary-foreground shadow-apple" 
-                    : "hover:bg-card/50"
+                    ? "bg-gray-900 text-white shadow-apple" 
+                    : "text-gray-700 hover:bg-gray-100"
                 }`}
               >
                 <BarChart3 className="h-4 w-4" />
@@ -47,8 +47,8 @@ function Header() {
                 variant={location === "/data-entry" ? "default" : "ghost"}
                 className={`apple-button flex items-center space-x-2.5 px-4 py-2.5 rounded-xl text-body font-medium ${
                   location === "/data-entry" 
-                    ? "bg-primary text-primary-foreground shadow-apple" 
-                    : "hover:bg-card/50"
+                    ? "bg-gray-900 text-white shadow-apple" 
+                    : "text-gray-700 hover:bg-gray-100"
                 }`}
               >
                 <Table className="h-4 w-4" />
@@ -60,8 +60,8 @@ function Header() {
                 variant={location === "/calendar" ? "default" : "ghost"}
                 className={`apple-button flex items-center space-x-2.5 px-4 py-2.5 rounded-xl text-body font-medium ${
                   location === "/calendar" 
-                    ? "bg-primary text-primary-foreground shadow-apple" 
-                    : "hover:bg-card/50"
+                    ? "bg-gray-900 text-white shadow-apple" 
+                    : "text-gray-700 hover:bg-gray-100"
                 }`}
               >
                 <CalendarIcon className="h-4 w-4" />

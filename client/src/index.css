@@ -16,15 +16,15 @@
   --card-foreground: 29 29 31;
   --border: 229 229 234; /* #e5e5ea - Subtle border */
   --input: 242 242 247; /* #f2f2f7 - Light gray input */
-  --primary: 0 122 255; /* #007aff - Apple blue */
+  --primary: 55 65 81; /* #374151 - Dark gray */
   --primary-foreground: 255 255 255;
   --secondary: 242 242 247; /* #f2f2f7 - Light gray */
   --secondary-foreground: 29 29 31;
-  --accent: 52 199 89; /* #34c759 - Apple green */
+  --accent: 55 65 81; /* #374151 - Dark gray */
   --accent-foreground: 255 255 255;
-  --destructive: 255 59 48; /* #ff3b30 - Apple red */
+  --destructive: 239 68 68; /* #ef4444 - Red */
   --destructive-foreground: 255 255 255;
-  --ring: 0 122 255; /* Apple blue focus ring */
+  --ring: 55 65 81; /* Dark gray focus ring */
   --radius: 12px; /* Apple's preferred corner radius */
   
   /* Apple color palette */
@@ -33,7 +33,7 @@
   --apple-pink: 255 45 85; /* #ff2d55 */
   --apple-indigo: 88 86 214; /* #5856d6 */
   --apple-teal: 90 200 250; /* #5ac8fa */
-  --apple-yellow: 255 204 0; /* #ffcc00 */
+  --apple-yellow: 156 163 175; /* #9ca3af - Neutral gray instead of yellow */
   
   /* Chart colors - Apple inspired */
   --chart-1: 0 122 255; /* Apple blue */
