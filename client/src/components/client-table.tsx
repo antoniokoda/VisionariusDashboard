@@ -873,29 +873,29 @@ export function ClientTable({ clients }: ClientTableProps) {
                     </td>
 
                     {/* Revenue */}
-                    <td className="py-3 px-4 w-48">
+                    <td className="py-3 px-4 w-32">
                       <div className="relative w-full">
-                        <span className="absolute left-3 top-3 text-gray-500 text-sm">$</span>
+                        <span className="absolute left-3 top-2.5 text-gray-500 text-sm">€</span>
                         <Input
                           type="text"
                           value={client.revenue || "0"}
                           onChange={(e) => handleUpdateClient(client.id, "revenue", e.target.value)}
                           placeholder="0"
-                          className="w-full pl-8 pr-3 py-2 text-sm h-10 min-w-[150px]"
+                          className="w-full pl-8 pr-2 py-1 text-sm h-8 min-w-[100px]"
                         />
                       </div>
                     </td>
 
                     {/* Cash Collected */}
-                    <td className="py-3 px-4 w-48">
+                    <td className="py-3 px-4 w-32">
                       <div className="relative w-full">
-                        <span className="absolute left-3 top-3 text-gray-500 text-sm">$</span>
+                        <span className="absolute left-3 top-2.5 text-gray-500 text-sm">€</span>
                         <Input
                           type="text"
                           value={client.cashCollected || "0"}
                           onChange={(e) => handleUpdateClient(client.id, "cashCollected", e.target.value)}
                           placeholder="0"
-                          className="w-full pl-8 pr-3 py-2 text-sm h-10 min-w-[150px]"
+                          className="w-full pl-8 pr-2 py-1 text-sm h-8 min-w-[100px]"
                         />
                       </div>
                     </td>
