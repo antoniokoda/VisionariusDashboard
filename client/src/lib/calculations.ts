@@ -10,8 +10,9 @@ export function calculateKPIs(clients: Client[], previousMonthClients?: Client[]
   }, 0);
 
   const totalProposalsPitched = clients.filter(client => client.proposalStatus === "Pitched").length;
+  const totalOpportunities = clients.length;
   const wonClients = clients.filter(client => client.dealStatus === "Won").length;
-  const closingRate = totalProposalsPitched > 0 ? (wonClients / totalProposalsPitched) * 100 : 0;
+  const closingRate = totalOpportunities > 0 ? (wonClients / totalOpportunities) * 100 : 0;
 
   const totalCalls = clients.reduce((sum, client) => {
     let callCount = 0;
@@ -94,8 +95,9 @@ function calculateKPIsForPeriod(clients: Client[]): KPIData {
   }, 0);
 
   const totalProposalsPitched = clients.filter(client => client.proposalStatus === "Pitched").length;
+  const totalOpportunities = clients.length;
   const wonClients = clients.filter(client => client.dealStatus === "Won").length;
-  const closingRate = totalProposalsPitched > 0 ? (wonClients / totalProposalsPitched) * 100 : 0;
+  const closingRate = totalOpportunities > 0 ? (wonClients / totalOpportunities) * 100 : 0;
 
   const totalCalls = clients.reduce((sum, client) => {
     let callCount = 0;
