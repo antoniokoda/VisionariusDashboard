@@ -45,7 +45,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get all clients
-  app.get("/api/clients", async (req, res) => {
+  app.get("/api/clients", isAuthenticated, async (req, res) => {
     try {
       const clients = await storage.getAllClients();
       res.json(clients);
@@ -55,7 +55,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get clients by month
-  app.get("/api/clients/month/:year/:month", async (req, res) => {
+  app.get("/api/clients/month/:year/:month", isAuthenticated, async (req, res) => {
     try {
       const year = parseInt(req.params.year);
       const month = parseInt(req.params.month);
@@ -67,7 +67,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Create new client
-  app.post("/api/clients", async (req, res) => {
+  app.post("/api/clients", isAuthenticated, async (req, res) => {
     try {
       const validatedData = insertClientSchema.parse(req.body);
       const client = await storage.createClient(validatedData);
