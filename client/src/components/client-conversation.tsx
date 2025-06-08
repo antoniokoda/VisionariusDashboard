@@ -77,28 +77,37 @@ export function ClientConversation({
 
     // Send audio message
     if (audioBlob) {
-      const audioUrl = URL.createObjectURL(audioBlob);
-      addMessageMutation.mutate({
-        message: `Voice message (${recordingDuration}s)`,
-        userId: 1,
-        userName: "User",
-        type: "audio",
-        fileUrl: audioUrl
-      });
+      // Convert blob to base64 data URL for persistent storage
+      const reader = new FileReader();
+      reader.onload = () => {
+        const audioDataUrl = reader.result as string;
+        addMessageMutation.mutate({
+          message: `Voice message (${recordingDuration}s)`,
+          userId: 1,
+          userName: "User",
+          type: "audio",
+          fileUrl: audioDataUrl
+        });
+      };
+      reader.readAsDataURL(audioBlob);
       setAudioBlob(null);
       setRecordingDuration(0);
     }
 
     // Send file messages
     selectedFiles.forEach(file => {
-      const fileUrl = URL.createObjectURL(file);
-      addMessageMutation.mutate({
-        message: `File: ${file.name}`,
-        userId: 1,
-        userName: "User",
-        type: "file",
-        fileUrl: fileUrl
-      });
+      const reader = new FileReader();
+      reader.onload = () => {
+        const fileDataUrl = reader.result as string;
+        addMessageMutation.mutate({
+          message: `File: ${file.name}`,
+          userId: 1,
+          userName: "User",
+          type: "file",
+          fileUrl: fileDataUrl
+        });
+      };
+      reader.readAsDataURL(file);
     });
 
     setSelectedFiles([]);
@@ -115,7 +124,7 @@ export function ClientConversation({
       };
 
       mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+        const audioBlob = new Blob(audioChunks, { type: 'audio/webm;codecs=opus' });
         setAudioBlob(audioBlob);
         stream.getTracks().forEach(track => track.stop());
       };
@@ -217,18 +226,22 @@ export function ClientConversation({
                           {message.message}
                         </p>
                       ) : message.type === "audio" ? (
-                        <div className="flex items-center space-x-2">
-                          <Mic className="h-4 w-4 text-blue-500" />
-                          <span className="text-sm text-blue-600">Mensaje de audio</span>
+                        <div className="space-y-2">
+                          <div className="flex items-center space-x-2">
+                            <Mic className="h-4 w-4 text-blue-500" />
+                            <span className="text-sm text-blue-600">{message.message}</span>
+                          </div>
                           {message.fileUrl && (
-                            <Button
-                              variant="link"
-                              size="sm"
-                              className="p-0 h-auto text-xs"
-                              onClick={() => window.open(message.fileUrl!, '_blank')}
+                            <audio 
+                              controls 
+                              className="w-full max-w-xs"
+                              preload="metadata"
                             >
-                              Reproducir
-                            </Button>
+                              <source src={message.fileUrl} type="audio/webm" />
+                              <source src={message.fileUrl} type="audio/wav" />
+                              <source src={message.fileUrl} type="audio/mp3" />
+                              Your browser does not support the audio element.
+                            </audio>
                           )}
                         </div>
                       ) : message.type === "file" ? (
