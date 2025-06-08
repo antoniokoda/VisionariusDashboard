@@ -43,7 +43,7 @@ export function ClientConversation({
   });
 
   const addMessageMutation = useMutation({
-    mutationFn: async (message: { message: string; userId: number; userName: string; type?: string }) => {
+    mutationFn: async (message: { message: string; userId: number; userName: string; type?: string; fileUrl?: string }) => {
       const response = await apiRequest("POST", `/api/clients/${clientId}/conversation`, message);
       return response.json();
     },

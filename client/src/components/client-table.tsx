@@ -306,9 +306,10 @@ export function ClientTable({ clients }: ClientTableProps) {
     <div className="space-y-6">
       {playMediaEffect && currentMediaType && (
         <MediaEffects
-          audio={mediaEffects[currentMediaType]?.audio}
-          video={mediaEffects[currentMediaType]?.video}
-          onMediaEnded={() => setPlayMediaEffect(false)}
+          audioUrl={mediaEffects[currentMediaType]?.audio}
+          videoUrl={mediaEffects[currentMediaType]?.video}
+          trigger={playMediaEffect}
+          onComplete={() => setPlayMediaEffect(false)}
         />
       )}
 

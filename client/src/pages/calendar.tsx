@@ -107,8 +107,16 @@ export default function Calendar() {
 
   const getEventsForDay = (date: Date): CalendarEvent[] => {
     if (!events) return [];
-    const dateString = date.toISOString().split('T')[0];
-    return events.filter(event => event.date === dateString);
+    // Use local date string to avoid timezone issues
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const dateString = `${year}-${month}-${day}`;
+    
+    return events.filter(event => {
+      const eventDate = event.date.split('T')[0]; // Get just the date part
+      return eventDate === dateString;
+    });
   };
 
   const isToday = (date: Date): boolean => {
