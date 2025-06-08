@@ -85,8 +85,10 @@ export default function Calendar() {
     const lastDay = new Date(year, month + 1, 0);
     const days: Date[] = [];
 
+    // Convert Sunday-based getDay() to Monday-based (0=Monday, 6=Sunday)
+    const firstDayOfWeek = (firstDay.getDay() + 6) % 7;
+    
     // Add days from previous month to fill the grid
-    const firstDayOfWeek = firstDay.getDay();
     for (let i = firstDayOfWeek - 1; i >= 0; i--) {
       days.push(new Date(year, month, -i));
     }
@@ -138,7 +140,7 @@ export default function Calendar() {
   }
 
   const days = getDaysInMonth(currentDate);
-  const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   return (
     <div className="space-y-6">
