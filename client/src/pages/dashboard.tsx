@@ -14,12 +14,10 @@ export default function Dashboard() {
 
   const { data: dashboardData, isLoading } = useQuery<DashboardData>({
     queryKey: ["/api/dashboard", selectedPeriod],
-    refetchInterval: 30000, // Refresh every 30 seconds
   });
 
   const { data: availableMonths = [] } = useQuery<string[]>({
     queryKey: ["/api/available-months"],
-    refetchInterval: 30000,
   });
 
   const periodOptions = [

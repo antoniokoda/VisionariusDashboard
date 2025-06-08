@@ -89,10 +89,21 @@ export function ClientTable({ clients }: ClientTableProps) {
       const response = await apiRequest("PATCH", `/api/clients/${id}`, data);
       return response.json();
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/clients"] });
+    onSuccess: (updatedClient, { id }) => {
+      // Update specific client in cache immediately
+      queryClient.setQueryData(["/api/clients"], (oldData: Client[] | undefined) => {
+        if (!oldData) return oldData;
+        return oldData.map(client => client.id === id ? updatedClient : client);
+      });
+      
+      // Only invalidate dashboard and calendar for efficiency
       queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
       queryClient.invalidateQueries({ queryKey: ["/api/calendar"] });
+      
+      // Invalidate monthly client data if it exists
+      const now = new Date();
+      const monthKey = `/api/clients/month/${now.getFullYear()}/${now.getMonth() + 1}`;
+      queryClient.invalidateQueries({ queryKey: [monthKey] });
     },
   });
 
@@ -127,11 +138,9 @@ export function ClientTable({ clients }: ClientTableProps) {
       )
     );
 
-    // Debounced update to server
-    setTimeout(() => {
-      updateClientMutation.mutate({ id, data: { [field]: value } });
-      showSaveFeedback(id);
-    }, 500);
+    // Immediate server update with optimistic UI
+    updateClientMutation.mutate({ id, data: { [field]: value } });
+    showSaveFeedback(id);
   };
 
   const showSaveFeedback = (clientId: number) => {

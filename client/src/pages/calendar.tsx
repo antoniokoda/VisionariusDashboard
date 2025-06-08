@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChevronLeft, ChevronRight, Phone, ExternalLink, User, Clock } from "lucide-react";
-import { type CalendarEvent } from "@shared/schema";
+import { type CalendarEvent, type Client } from "@shared/schema";
 
 export default function Calendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -27,10 +27,13 @@ export default function Calendar() {
   const currentMonth = currentDate.getMonth() + 1;
   const currentYear = currentDate.getFullYear();
   
-  const { data: monthlyClients } = useQuery({
+  const { data: monthlyClients } = useQuery<Client[]>({
     queryKey: [`/api/clients/month/${currentYear}/${currentMonth}`],
     refetchInterval: 30000,
   });
+
+  // Ensure monthlyClients is always an array for safe operations
+  const safeMonthlyClients = monthlyClients || [];
 
   const formatDate = (date: Date): string => {
     return date.toLocaleDateString('en-US', {
@@ -326,47 +329,47 @@ export default function Calendar() {
                   </span>
                 </div>
                 
-                {monthlyClients && (
+                {safeMonthlyClients.length > 0 && (
                   <>
                     <hr className="my-3" />
                     <div className="flex justify-between">
                       <span className="text-sm text-neutral-600">Oportunidades Totales:</span>
-                      <span className="font-semibold">{monthlyClients.length}</span>
+                      <span className="font-semibold">{safeMonthlyClients.length}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm text-neutral-600">Deals Ganados:</span>
                       <span className="font-semibold text-green-600">
-                        {monthlyClients.filter(c => c.dealStatus === "Won").length}
+                        {safeMonthlyClients.filter((c: Client) => c.dealStatus === "Won").length}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm text-neutral-600">Deals Perdidos:</span>
                       <span className="font-semibold text-red-600">
-                        {monthlyClients.filter(c => c.dealStatus === "Lost").length}
+                        {safeMonthlyClients.filter((c: Client) => c.dealStatus === "Lost").length}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm text-neutral-600">Revenue Total:</span>
                       <span className="font-semibold text-emerald-600">
-                        ${monthlyClients
-                          .filter(c => c.dealStatus === "Won")
-                          .reduce((sum, c) => sum + parseFloat(c.revenue || "0"), 0)
+                        ${safeMonthlyClients
+                          .filter((c: Client) => c.dealStatus === "Won")
+                          .reduce((sum: number, c: Client) => sum + parseFloat(c.revenue || "0"), 0)
                           .toLocaleString()}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm text-neutral-600">Cash Collected:</span>
                       <span className="font-semibold text-green-600">
-                        ${monthlyClients
-                          .reduce((sum, c) => sum + parseFloat(c.cashCollected || "0"), 0)
+                        ${safeMonthlyClients
+                          .reduce((sum: number, c: Client) => sum + parseFloat(c.cashCollected || "0"), 0)
                           .toLocaleString()}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm text-neutral-600">Tasa de Cierre:</span>
                       <span className="font-semibold text-blue-600">
-                        {monthlyClients.length > 0 
-                          ? Math.round((monthlyClients.filter(c => c.dealStatus === "Won").length / monthlyClients.length) * 100)
+                        {safeMonthlyClients.length > 0 
+                          ? Math.round((safeMonthlyClients.filter((c: Client) => c.dealStatus === "Won").length / safeMonthlyClients.length) * 100)
                           : 0}%
                       </span>
                     </div>
