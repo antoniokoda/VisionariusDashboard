@@ -143,7 +143,7 @@ export class MemStorage implements IStorage {
     const client: Client = {
       id,
       name: insertClient.name || "",
-      contacts: insertClient.contacts || "[]",
+      contacts: insertClient.contacts || null,
       discovery1Date: insertClient.discovery1Date || null,
       discovery1Duration: insertClient.discovery1Duration || null,
       discovery1Recording: insertClient.discovery1Recording || null,
@@ -164,6 +164,8 @@ export class MemStorage implements IStorage {
       closing3Recording: insertClient.closing3Recording || null,
       proposalStatus: insertClient.proposalStatus || "N/A",
       revenue: insertClient.revenue || "0",
+      cashCollected: insertClient.cashCollected || "0",
+      dealStatus: insertClient.dealStatus || "Open",
       isWon: insertClient.isWon || false,
       isLost: insertClient.isLost || false,
       files: insertClient.files || "[]",
