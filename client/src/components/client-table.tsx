@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -252,6 +252,47 @@ export function ClientTable({ clients }: ClientTableProps) {
     }
   };
 
+  // Group clients by month of first discovery call
+  const groupClientsByMonth = (clients: Client[]) => {
+    const grouped = new Map<string, Client[]>();
+    
+    clients.forEach(client => {
+      let monthKey = 'no-discovery';
+      
+      if (client.discovery1Date) {
+        const date = new Date(client.discovery1Date);
+        monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      }
+      
+      if (!grouped.has(monthKey)) {
+        grouped.set(monthKey, []);
+      }
+      grouped.get(monthKey)!.push(client);
+    });
+
+    // Sort groups by date (newest first)
+    const sortedEntries = Array.from(grouped.entries()).sort((a, b) => {
+      if (a[0] === 'no-discovery') return 1;
+      if (b[0] === 'no-discovery') return -1;
+      return b[0].localeCompare(a[0]);
+    });
+
+    return sortedEntries;
+  };
+
+  const formatMonthHeader = (monthKey: string): string => {
+    if (monthKey === 'no-discovery') {
+      return 'No Discovery Calls Scheduled';
+    }
+    
+    const [year, month] = monthKey.split('-');
+    const date = new Date(parseInt(year), parseInt(month) - 1);
+    return date.toLocaleDateString('en-US', { 
+      month: 'long', 
+      year: 'numeric' 
+    });
+  };
+
   const getFiles = (filesJson: string | null): string[] => {
     try {
       const files = JSON.parse(filesJson || "[]");
@@ -343,18 +384,37 @@ export function ClientTable({ clients }: ClientTableProps) {
                 </tr>
               </thead>
               <tbody>
-                {localClients.map((client) => (
-                  <tr 
-                    key={client.id} 
-                    data-client-id={client.id}
-                    className={`
-                      border-b transition-all duration-500
-                      ${highlightedClientId === client.id 
-                        ? 'bg-blue-100 border-blue-300 shadow-md' 
-                        : 'hover:bg-gray-50'
-                      }
-                    `}
-                  >
+                {groupClientsByMonth(localClients).map(([monthKey, monthClients]) => (
+                  <React.Fragment key={monthKey}>
+                    {/* Month Header */}
+                    <tr className="bg-blue-50 border-b border-blue-200">
+                      <td colSpan={13} className="py-3 px-4">
+                        <div className="flex items-center space-x-2">
+                          <div className="h-1 w-1 bg-blue-500 rounded-full"></div>
+                          <h3 className="text-sm font-semibold text-blue-800">
+                            {formatMonthHeader(monthKey)}
+                          </h3>
+                          <div className="h-px bg-blue-200 flex-1"></div>
+                          <span className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
+                            {monthClients.length} {monthClients.length === 1 ? 'opportunity' : 'opportunities'}
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    
+                    {/* Client Rows */}
+                    {monthClients.map((client) => (
+                      <tr 
+                        key={client.id} 
+                        data-client-id={client.id}
+                        className={`
+                          border-b transition-all duration-500
+                          ${highlightedClientId === client.id 
+                            ? 'bg-blue-100 border-blue-300 shadow-md' 
+                            : 'hover:bg-gray-50'
+                          }
+                        `}
+                      >
                     <td className="py-3 px-4 w-40">
                       <div className="w-full">
                         <textarea
@@ -717,6 +777,8 @@ export function ClientTable({ clients }: ClientTableProps) {
                       </div>
                     </td>
                   </tr>
+                    ))}
+                  </React.Fragment>
                 ))}
               </tbody>
             </table>
