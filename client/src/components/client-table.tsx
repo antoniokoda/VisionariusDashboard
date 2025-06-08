@@ -875,7 +875,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                     {/* Revenue */}
                     <td className="py-3 px-4 w-32">
                       <div className="relative w-full">
-                        <span className="absolute left-3 top-2.5 text-gray-500 text-sm">€</span>
+                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">€</span>
                         <Input
                           type="text"
                           value={client.revenue || "0"}
@@ -889,7 +889,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                     {/* Cash Collected */}
                     <td className="py-3 px-4 w-32">
                       <div className="relative w-full">
-                        <span className="absolute left-3 top-2.5 text-gray-500 text-sm">€</span>
+                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">€</span>
                         <Input
                           type="text"
                           value={client.cashCollected || "0"}
