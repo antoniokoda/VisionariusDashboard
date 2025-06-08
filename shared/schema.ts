@@ -158,7 +158,7 @@ export interface CalendarEvent {
 // Conversation message interface
 export interface ConversationMessage {
   id: string;
-  userId: string;
+  userId: number;
   userName: string;
   message: string;
   type: "text" | "audio" | "file";

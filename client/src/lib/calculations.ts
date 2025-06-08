@@ -1,6 +1,80 @@
 import { type Client, type KPIData, type ShowUpRates, type FunnelData, type TimeMetrics, type CallMetrics } from "@shared/schema";
 
-export function calculateKPIs(clients: Client[]): KPIData {
+export function calculateKPIs(clients: Client[], previousMonthClients?: Client[]): KPIData {
+  const cashCollected = clients.reduce((sum, client) => {
+    return sum + (client.isWon ? parseFloat(client.revenue || "0") : 0);
+  }, 0);
+
+  const totalProposalsPitched = clients.filter(client => client.proposalStatus === "Pitched").length;
+  const wonClients = clients.filter(client => client.isWon).length;
+  const closingRate = totalProposalsPitched > 0 ? (wonClients / totalProposalsPitched) * 100 : 0;
+
+  const totalCalls = clients.reduce((sum, client) => {
+    let callCount = 0;
+    if (client.discovery1Date) callCount++;
+    if (client.discovery2Date) callCount++;
+    if (client.discovery3Date) callCount++;
+    if (client.closing1Date) callCount++;
+    if (client.closing2Date) callCount++;
+    if (client.closing3Date) callCount++;
+    return sum + callCount;
+  }, 0);
+
+  const avgSalesCycle = calculateAverageSalesCycle(clients);
+
+  const wonClientsWithRevenue = clients.filter(client => client.isWon && parseFloat(client.revenue || "0") > 0);
+  const avgDealSize = wonClientsWithRevenue.length > 0 
+    ? wonClientsWithRevenue.reduce((sum, client) => sum + parseFloat(client.revenue || "0"), 0) / wonClientsWithRevenue.length
+    : 0;
+
+  // Calculate month-over-month changes if previous month data is provided
+  let cashCollectedChange, closingRateChange, proposalsPitchedChange, avgSalesCycleChange, totalCallsChange, avgDealSizeChange;
+  
+  if (previousMonthClients) {
+    const prevKPIs = calculateKPIsForPeriod(previousMonthClients);
+    
+    cashCollectedChange = prevKPIs.cashCollected > 0 
+      ? ((cashCollected - prevKPIs.cashCollected) / prevKPIs.cashCollected) * 100 
+      : 0;
+    
+    closingRateChange = prevKPIs.closingRate > 0 
+      ? ((closingRate - prevKPIs.closingRate) / prevKPIs.closingRate) * 100 
+      : 0;
+    
+    proposalsPitchedChange = prevKPIs.proposalsPitched > 0 
+      ? ((totalProposalsPitched - prevKPIs.proposalsPitched) / prevKPIs.proposalsPitched) * 100 
+      : 0;
+    
+    avgSalesCycleChange = prevKPIs.avgSalesCycle > 0 
+      ? ((avgSalesCycle - prevKPIs.avgSalesCycle) / prevKPIs.avgSalesCycle) * 100 
+      : 0;
+    
+    totalCallsChange = prevKPIs.totalCalls > 0 
+      ? ((totalCalls - prevKPIs.totalCalls) / prevKPIs.totalCalls) * 100 
+      : 0;
+    
+    avgDealSizeChange = prevKPIs.avgDealSize > 0 
+      ? ((avgDealSize - prevKPIs.avgDealSize) / prevKPIs.avgDealSize) * 100 
+      : 0;
+  }
+
+  return {
+    cashCollected,
+    cashCollectedChange,
+    closingRate: Math.round(closingRate * 10) / 10,
+    closingRateChange,
+    proposalsPitched: totalProposalsPitched,
+    proposalsPitchedChange,
+    avgSalesCycle,
+    avgSalesCycleChange,
+    totalCalls,
+    totalCallsChange,
+    avgDealSize: Math.round(avgDealSize),
+    avgDealSizeChange,
+  };
+}
+
+function calculateKPIsForPeriod(clients: Client[]): KPIData {
   const cashCollected = clients.reduce((sum, client) => {
     return sum + (client.isWon ? parseFloat(client.revenue || "0") : 0);
   }, 0);

@@ -77,6 +77,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const period = req.query.period as string;
       let clients: Client[];
+      let previousMonthClients: Client[] | undefined;
 
       if (period && period !== "all") {
         // Parse period (e.g., "2024-03" -> year: 2024, month: 3)
@@ -86,16 +87,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         if (!isNaN(year) && !isNaN(month)) {
           clients = await storage.getClientsByMonth(year, month);
+          
+          // Get previous month data for comparison
+          const prevMonth = month === 1 ? 12 : month - 1;
+          const prevYear = month === 1 ? year - 1 : year;
+          previousMonthClients = await storage.getClientsByMonth(prevYear, prevMonth);
         } else {
           clients = await storage.getAllClients();
         }
       } else {
         // "all" or no period specified - get all clients
         clients = await storage.getAllClients();
+        
+        // For "all" period, get previous month data for comparison
+        const now = new Date();
+        const currentMonth = now.getMonth() + 1;
+        const currentYear = now.getFullYear();
+        const prevMonth = currentMonth === 1 ? 12 : currentMonth - 1;
+        const prevYear = currentMonth === 1 ? currentYear - 1 : currentYear;
+        
+        const currentMonthClients = await storage.getClientsByMonth(currentYear, currentMonth);
+        previousMonthClients = await storage.getClientsByMonth(prevYear, prevMonth);
+        
+        // Use current month clients for main calculation when showing "all"
+        if (currentMonthClients.length > 0) {
+          clients = currentMonthClients;
+        }
       }
 
       const dashboardData: DashboardData = {
-        kpis: calculateKPIs(clients),
+        kpis: calculateKPIs(clients, previousMonthClients),
         showUpRates: calculateShowUpRates(clients),
         funnelData: calculateFunnelData(clients),
         timeMetrics: calculateTimeMetrics(clients),

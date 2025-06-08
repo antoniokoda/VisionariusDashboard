@@ -44,6 +44,18 @@ export default function Dashboard() {
     return `${minutes} min`;
   };
 
+  const formatPercentageChange = (change?: number): { value: string; type: "increase" | "decrease" | "neutral" } | undefined => {
+    if (change === undefined || change === 0) return undefined;
+    
+    const absChange = Math.abs(change);
+    const formattedChange = absChange < 0.1 ? "< 0.1" : absChange.toFixed(1);
+    
+    return {
+      value: `${change > 0 ? '+' : '-'}${formattedChange}% vs last month`,
+      type: change > 0 ? "increase" : change < 0 ? "decrease" : "neutral"
+    };
+  };
+
   if (isLoading) {
     return (
       <div className="space-y-8">
@@ -99,10 +111,7 @@ export default function Dashboard() {
           icon={DollarSign}
           iconColor="bg-green-500"
           valueColor="text-green-600"
-          change={{
-            value: "+12.5% vs last month",
-            type: "increase"
-          }}
+          change={formatPercentageChange(dashboardData.kpis.cashCollectedChange)}
         />
 
         <KPICard
@@ -111,10 +120,7 @@ export default function Dashboard() {
           icon={Target}
           iconColor="bg-blue-500"
           valueColor="text-blue-600"
-          change={{
-            value: "+3.2% vs last month",
-            type: "increase"
-          }}
+          change={formatPercentageChange(dashboardData.kpis.closingRateChange)}
         />
 
         <KPICard
@@ -123,10 +129,7 @@ export default function Dashboard() {
           icon={ChartGantt}
           iconColor="bg-yellow-500"
           valueColor="text-yellow-600"
-          change={{
-            value: "-5.7% vs last month",
-            type: "decrease"
-          }}
+          change={formatPercentageChange(dashboardData.kpis.proposalsPitchedChange)}
         />
 
         <KPICard
@@ -135,10 +138,7 @@ export default function Dashboard() {
           icon={Clock}
           iconColor="bg-gray-500"
           valueColor="text-neutral-700"
-          change={{
-            value: "No change",
-            type: "neutral"
-          }}
+          change={formatPercentageChange(dashboardData.kpis.avgSalesCycleChange)}
         />
 
         <KPICard
@@ -147,10 +147,7 @@ export default function Dashboard() {
           icon={Phone}
           iconColor="bg-purple-500"
           valueColor="text-purple-600"
-          change={{
-            value: "+8.1% vs last month",
-            type: "increase"
-          }}
+          change={formatPercentageChange(dashboardData.kpis.totalCallsChange)}
         />
 
         <KPICard
@@ -159,10 +156,7 @@ export default function Dashboard() {
           icon={TrendingUp}
           iconColor="bg-indigo-500"
           valueColor="text-indigo-600"
-          change={{
-            value: "+15.3% vs last month",
-            type: "increase"
-          }}
+          change={formatPercentageChange(dashboardData.kpis.avgDealSizeChange)}
         />
       </div>
 
