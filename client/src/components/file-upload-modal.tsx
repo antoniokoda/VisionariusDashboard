@@ -1,6 +1,7 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { FileText, Upload, Trash2, X } from "lucide-react";
 
 interface FileUploadModalProps {
@@ -20,6 +21,7 @@ export function FileUploadModal({
 }: FileUploadModalProps) {
   const [files, setFiles] = useState<string[]>(currentFiles);
   const [newFileUrl, setNewFileUrl] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleAddFile = () => {
     if (newFileUrl.trim()) {
@@ -27,6 +29,20 @@ export function FileUploadModal({
       setFiles(updatedFiles);
       onFilesUpdate(updatedFiles);
       setNewFileUrl("");
+    }
+  };
+
+  const handleFileSelect = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFiles = e.target.files;
+    if (selectedFiles) {
+      const fileNames = Array.from(selectedFiles).map(file => file.name);
+      const updatedFiles = [...files, ...fileNames];
+      setFiles(updatedFiles);
+      onFilesUpdate(updatedFiles);
     }
   };
 
@@ -60,16 +76,33 @@ export function FileUploadModal({
         </DialogHeader>
 
         <div className="space-y-6">
+          {/* Hidden File Input */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            className="hidden"
+            onChange={handleFileChange}
+            accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.png,.jpg,.jpeg"
+          />
+
           {/* Drag and Drop Area */}
           <div
             className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary transition-colors cursor-pointer"
             onDragOver={handleDragOver}
             onDrop={handleDrop}
+            onClick={handleFileSelect}
           >
             <Upload className="mx-auto h-8 w-8 text-gray-400 mb-4" />
             <p className="text-neutral-600 mb-2">Drag and drop files here</p>
             <p className="text-sm text-neutral-500 mb-4">or</p>
-            <Button variant="default">
+            <Button 
+              variant="default" 
+              onClick={(e) => {
+                e.stopPropagation();
+                handleFileSelect();
+              }}
+            >
               Choose Files
             </Button>
           </div>
