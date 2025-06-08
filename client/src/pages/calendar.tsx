@@ -11,8 +11,24 @@ export default function Calendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
 
-  const { data: events, isLoading } = useQuery<CalendarEvent[]>({
+  const { data: allEvents, isLoading } = useQuery<CalendarEvent[]>({
     queryKey: ["/api/calendar"],
+    refetchInterval: 30000,
+  });
+
+  // Filter events for the current month
+  const events = allEvents?.filter(event => {
+    const eventDate = new Date(event.date);
+    return eventDate.getMonth() === currentDate.getMonth() && 
+           eventDate.getFullYear() === currentDate.getFullYear();
+  }) || [];
+
+  // Get clients data for current month statistics
+  const currentMonth = currentDate.getMonth() + 1;
+  const currentYear = currentDate.getFullYear();
+  
+  const { data: monthlyClients } = useQuery({
+    queryKey: [`/api/clients/month/${currentYear}/${currentMonth}`],
     refetchInterval: 30000,
   });
 
@@ -289,26 +305,73 @@ export default function Calendar() {
           {/* Quick Stats */}
           <Card className="mt-6">
             <CardHeader>
-              <CardTitle>Estadísticas Rápidas</CardTitle>
+              <CardTitle>Estadísticas Rápidas - {currentDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-sm text-neutral-600">Total de Eventos:</span>
-                  <span className="font-semibold">{events?.length || 0}</span>
+                  <span className="font-semibold">{events.length}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-neutral-600">Llamadas de Descubrimiento:</span>
                   <span className="font-semibold text-blue-600">
-                    {events?.filter(e => e.type.includes('discovery')).length || 0}
+                    {events.filter(e => e.type.includes('discovery')).length}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-neutral-600">Llamadas de Cierre:</span>
                   <span className="font-semibold text-green-600">
-                    {events?.filter(e => e.type.includes('closing')).length || 0}
+                    {events.filter(e => e.type.includes('closing')).length}
                   </span>
                 </div>
+                
+                {monthlyClients && (
+                  <>
+                    <hr className="my-3" />
+                    <div className="flex justify-between">
+                      <span className="text-sm text-neutral-600">Oportunidades Totales:</span>
+                      <span className="font-semibold">{monthlyClients.length}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-neutral-600">Deals Ganados:</span>
+                      <span className="font-semibold text-green-600">
+                        {monthlyClients.filter(c => c.dealStatus === "Won").length}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-neutral-600">Deals Perdidos:</span>
+                      <span className="font-semibold text-red-600">
+                        {monthlyClients.filter(c => c.dealStatus === "Lost").length}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-neutral-600">Revenue Total:</span>
+                      <span className="font-semibold text-emerald-600">
+                        ${monthlyClients
+                          .filter(c => c.dealStatus === "Won")
+                          .reduce((sum, c) => sum + parseFloat(c.revenue || "0"), 0)
+                          .toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-neutral-600">Cash Collected:</span>
+                      <span className="font-semibold text-green-600">
+                        ${monthlyClients
+                          .reduce((sum, c) => sum + parseFloat(c.cashCollected || "0"), 0)
+                          .toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-neutral-600">Tasa de Cierre:</span>
+                      <span className="font-semibold text-blue-600">
+                        {monthlyClients.length > 0 
+                          ? Math.round((monthlyClients.filter(c => c.dealStatus === "Won").length / monthlyClients.length) * 100)
+                          : 0}%
+                      </span>
+                    </div>
+                  </>
+                )}
               </div>
             </CardContent>
           </Card>
