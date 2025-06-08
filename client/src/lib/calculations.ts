@@ -34,34 +34,34 @@ export function calculateKPIs(clients: Client[], previousMonthClients?: Client[]
 
   // Calculate month-over-month changes if previous month data is provided
   let totalRevenueChange, cashCollectedChange, closingRateChange, proposalsPitchedChange, avgSalesCycleChange, totalCallsChange, avgDealSizeChange;
-  
+
   if (previousMonthClients) {
     const prevKPIs = calculateKPIsForPeriod(previousMonthClients);
-    
+
     totalRevenueChange = prevKPIs.totalRevenue > 0 
       ? ((totalRevenue - prevKPIs.totalRevenue) / prevKPIs.totalRevenue) * 100 
       : 0;
-    
+
     cashCollectedChange = prevKPIs.cashCollected > 0 
       ? ((cashCollected - prevKPIs.cashCollected) / prevKPIs.cashCollected) * 100 
       : 0;
-    
+
     closingRateChange = prevKPIs.closingRate > 0 
       ? ((closingRate - prevKPIs.closingRate) / prevKPIs.closingRate) * 100 
       : 0;
-    
+
     proposalsPitchedChange = prevKPIs.proposalsPitched > 0 
       ? ((totalProposalsPitched - prevKPIs.proposalsPitched) / prevKPIs.proposalsPitched) * 100 
       : 0;
-    
+
     avgSalesCycleChange = prevKPIs.avgSalesCycle > 0 
       ? ((avgSalesCycle - prevKPIs.avgSalesCycle) / prevKPIs.avgSalesCycle) * 100 
       : 0;
-    
+
     totalCallsChange = prevKPIs.totalCalls > 0 
       ? ((totalCalls - prevKPIs.totalCalls) / prevKPIs.totalCalls) * 100 
       : 0;
-    
+
     avgDealSizeChange = prevKPIs.avgDealSize > 0 
       ? ((avgDealSize - prevKPIs.avgDealSize) / prevKPIs.avgDealSize) * 100 
       : 0;
@@ -300,11 +300,110 @@ function calculateAverageSalesCycle(clients: Client[]): number {
                     c.closing2Date ? new Date(c.closing2Date) :
                     c.closing1Date ? new Date(c.closing1Date) :
                     new Date(c.discovery3Date || c.discovery2Date || c.discovery1Date!);
-      
+
       return Math.abs((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
     });
 
   return completedCycles.length > 0 
     ? Math.round((completedCycles.reduce((sum, cycle) => sum + cycle, 0) / completedCycles.length) * 10) / 10
     : 0;
+}
+
+export function calculateTrendData(clients: Client[]): TrendData[] {
+  const monthlyData = new Map<string, { revenue: number; deals: number; won: number; cashCollected: number }>();
+
+  clients.forEach(client => {
+    if (client.createdAt) {
+      const date = new Date(client.createdAt);
+      const period = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+
+      if (!monthlyData.has(period)) {
+        monthlyData.set(period, { revenue: 0, deals: 0, won: 0, cashCollected: 0 });
+      }
+
+      const data = monthlyData.get(period)!;
+      data.deals++;
+      data.revenue += parseFloat(client.revenue || "0");
+      data.cashCollected += parseFloat(client.cashCollected || "0");
+
+      if (client.dealStatus === "Won") {
+        data.won++;
+      }
+    }
+  });
+
+  return Array.from(monthlyData.entries())
+    .map(([period, data]) => ({
+      period,
+      revenue: data.revenue,
+      deals: data.deals,
+      closingRate: data.deals > 0 ? Math.round((data.won / data.deals) * 100 * 10) / 10 : 0,
+      cashCollected: data.cashCollected,
+    }))
+    .sort((a, b) => a.period.localeCompare(b.period));
+}
+
+export function calculateLeadSources(clients: Client[]): LeadSourceData[] {
+  const sourceData = new Map<string, { count: number; revenue: number; won: number }>();
+  const totalClients = clients.length;
+
+  clients.forEach(client => {
+    const source = client.leadSource || "Referrals";
+
+    if (!sourceData.has(source)) {
+      sourceData.set(source, { count: 0, revenue: 0, won: 0 });
+    }
+
+    const data = sourceData.get(source)!;
+    data.count++;
+    data.revenue += parseFloat(client.revenue || "0");
+
+    if (client.dealStatus === "Won") {
+      data.won++;
+    }
+  });
+
+  return Array.from(sourceData.entries()).map(([source, data]) => ({
+    source,
+    count: data.count,
+    percentage: totalClients > 0 ? Math.round((data.count / totalClients) * 100 * 10) / 10 : 0,
+    revenue: data.revenue,
+    conversionRate: data.count > 0 ? Math.round((data.won / data.count) * 100 * 10) / 10 : 0,
+  }));
+}
+
+export function calculateSalespersonPerformance(clients: Client[]): SalespersonPerformance[] {
+  const salesData = new Map<string, { revenue: number; won: number; total: number; calls: number }>();
+
+  clients.forEach(client => {
+    const salesperson = client.salesperson || "Unknown";
+
+    if (!salesData.has(salesperson)) {
+      salesData.set(salesperson, { revenue: 0, won: 0, total: 0, calls: 0 });
+    }
+
+    const data = salesData.get(salesperson)!;
+    data.total++;
+    data.revenue += parseFloat(client.revenue || "0");
+
+    if (client.dealStatus === "Won") {
+      data.won++;
+    }
+
+    // Count total calls
+    const callFields = [
+      client.discovery1Date, client.discovery2Date, client.discovery3Date,
+      client.closing1Date, client.closing2Date, client.closing3Date
+    ];
+    data.calls += callFields.filter(date => date).length;
+  });
+
+  return Array.from(salesData.entries()).map(([name, data]) => ({
+    name,
+    totalRevenue: data.revenue,
+    dealsWon: data.won,
+    closingRate: data.total > 0 ? Math.round((data.won / data.total) * 100 * 10) / 10 : 0,
+    avgDealSize: data.won > 0 ? Math.round(data.revenue / data.won) : 0,
+    totalCalls: data.calls,
+  }));
 }

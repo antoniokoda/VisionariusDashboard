@@ -84,14 +84,14 @@ export function ClientTable({ clients }: ClientTableProps) {
         if (!oldData) return [newClient];
         return [...oldData, newClient];
       });
-      
+
       // Update local state immediately
       setLocalClients(prev => [...prev, newClient]);
-      
+
       // Invalidate dependent queries
       queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
       queryClient.invalidateQueries({ queryKey: ["/api/calendar"] });
-      
+
       // Invalidate current month data
       const now = new Date();
       const monthKey = `/api/clients/month/${now.getFullYear()}/${now.getMonth() + 1}`;
@@ -110,11 +110,11 @@ export function ClientTable({ clients }: ClientTableProps) {
         if (!oldData) return oldData;
         return oldData.map(client => client.id === id ? updatedClient : client);
       });
-      
+
       // Only invalidate dashboard and calendar for efficiency
       queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
       queryClient.invalidateQueries({ queryKey: ["/api/calendar"] });
-      
+
       // Invalidate monthly client data if it exists
       const now = new Date();
       const monthKey = `/api/clients/month/${now.getFullYear()}/${now.getMonth() + 1}`;
@@ -133,14 +133,14 @@ export function ClientTable({ clients }: ClientTableProps) {
         if (!oldData) return oldData;
         return oldData.filter(client => client.id !== deletedId);
       });
-      
+
       // Update local state immediately
       setLocalClients(prev => prev.filter(client => client.id !== deletedId));
-      
+
       // Invalidate dependent queries
       queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
       queryClient.invalidateQueries({ queryKey: ["/api/calendar"] });
-      
+
       // Invalidate current month data
       const now = new Date();
       const monthKey = `/api/clients/month/${now.getFullYear()}/${now.getMonth() + 1}`;
@@ -176,7 +176,7 @@ export function ClientTable({ clients }: ClientTableProps) {
 
     // For text fields like name, use debouncing to avoid excessive API calls
     const isTextFieldChange = field === 'name' && typeof value === 'string';
-    
+
     if (isTextFieldChange) {
       // Debounce text input updates
       debounceTimers.current[timerKey] = setTimeout(() => {
@@ -255,15 +255,15 @@ export function ClientTable({ clients }: ClientTableProps) {
   // Group clients by month of first discovery call
   const groupClientsByMonth = (clients: Client[]) => {
     const grouped = new Map<string, Client[]>();
-    
+
     clients.forEach(client => {
       let monthKey = 'no-discovery';
-      
+
       if (client.discovery1Date) {
         const date = new Date(client.discovery1Date);
         monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
       }
-      
+
       if (!grouped.has(monthKey)) {
         grouped.set(monthKey, []);
       }
@@ -284,7 +284,7 @@ export function ClientTable({ clients }: ClientTableProps) {
     if (monthKey === 'no-discovery') {
       return 'No Discovery Calls Scheduled';
     }
-    
+
     const [year, month] = monthKey.split('-');
     const date = new Date(parseInt(year), parseInt(month) - 1);
     return date.toLocaleDateString('en-US', { 
@@ -369,6 +369,8 @@ export function ClientTable({ clients }: ClientTableProps) {
               <thead className="bg-gray-50 border-b">
                 <tr>
                   <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-40">Sales Opportunity</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Lead Source</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Salesperson</th>
                   <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Discovery 1</th>
                   <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Discovery 2</th>
                   <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Discovery 3</th>
@@ -400,7 +402,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                         </div>
                       </td>
                     </tr>
-                    
+
                     {/* Client Rows */}
                     {monthClients.map((client) => (
                       <tr 
@@ -439,6 +441,10 @@ export function ClientTable({ clients }: ClientTableProps) {
                         )}
                       </div>
                     </td>
+                        <td className="py-3 px-4">
+                            <Badge variant="outline">{client.leadSource || "Referrals"}</Badge>
+                        </td>
+                        <td className="py-3 px-4">{client.salesperson || "Unknown"}</td>
 
                     {/* Discovery 1 */}
                     <td className="py-3 px-4">

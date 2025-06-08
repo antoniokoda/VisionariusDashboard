@@ -43,6 +43,10 @@ export const clients = pgTable("clients", {
   isWon: boolean("is_won").default(false),
   isLost: boolean("is_lost").default(false),
   
+  // Lead source and salesperson tracking
+  leadSource: text("lead_source", { enum: ["Referrals", "Cold Calling", "Skool Community", "YouTube", "Members of the team"] }).default("Referrals"),
+  salesperson: text("salesperson").notNull().default("Unknown"),
+  
   // File storage (JSON array of file URLs/names)
   files: text("files").default("[]"),
   
@@ -124,12 +128,40 @@ export interface CallMetrics {
   avgRevenue: number;
 }
 
+export interface TrendData {
+  period: string;
+  revenue: number;
+  deals: number;
+  closingRate: number;
+  cashCollected: number;
+}
+
+export interface LeadSourceData {
+  source: string;
+  count: number;
+  percentage: number;
+  revenue: number;
+  conversionRate: number;
+}
+
+export interface SalespersonPerformance {
+  name: string;
+  totalRevenue: number;
+  dealsWon: number;
+  closingRate: number;
+  avgDealSize: number;
+  totalCalls: number;
+}
+
 export interface DashboardData {
   kpis: KPIData;
   showUpRates: ShowUpRates;
   funnelData: FunnelData;
   timeMetrics: TimeMetrics;
   callMetrics: CallMetrics;
+  trendData: TrendData[];
+  leadSources: LeadSourceData[];
+  salespeople: SalespersonPerformance[];
 }
 
 // User schema for authentication (keeping minimal)

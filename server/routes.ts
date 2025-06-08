@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertClientSchema, updateClientSchema, type DashboardData, type CalendarEvent, type Client } from "@shared/schema";
-import { calculateKPIs, calculateShowUpRates, calculateFunnelData, calculateTimeMetrics, calculateCallMetrics } from "../client/src/lib/calculations";
+import { calculateKPIs, calculateShowUpRates, calculateFunnelData, calculateTimeMetrics, calculateCallMetrics, calculateTrendData, calculateLeadSources, calculateSalespersonPerformance } from "../client/src/lib/calculations";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
@@ -156,6 +156,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         funnelData: calculateFunnelData(clients),
         timeMetrics: calculateTimeMetrics(clients),
         callMetrics: calculateCallMetrics(clients),
+        trendData: calculateTrendData(clients),
+        leadSources: calculateLeadSources(clients),
+        salespeople: calculateSalespersonPerformance(clients),
       };
 
       res.json(dashboardData);
@@ -177,11 +180,86 @@ export async function registerRoutes(app: Express): Promise<Server> {
         funnelData: calculateFunnelData(clients),
         timeMetrics: calculateTimeMetrics(clients),
         callMetrics: calculateCallMetrics(clients),
+        trendData: calculateTrendData(clients),
+        leadSources: calculateLeadSources(clients),
+        salespeople: calculateSalespersonPerformance(clients),
       };
 
       res.json(dashboardData);
     } catch (error) {
       res.status(500).json({ error: "Failed to calculate dashboard data for specified month" });
+    }
+  });
+
+  // Get dashboard data filtered by lead source
+  app.get("/api/dashboard/source/:source", async (req, res) => {
+    try {
+      const leadSource = decodeURIComponent(req.params.source);
+      const period = req.query.period as string;
+      
+      let clients: Client[];
+      if (period && period !== "all") {
+        const [yearStr, monthStr] = period.split("-");
+        const year = parseInt(yearStr);
+        const month = parseInt(monthStr);
+        clients = await storage.getClientsByMonth(year, month);
+      } else {
+        clients = await storage.getAllClients();
+      }
+      
+      // Filter by lead source
+      const filteredClients = clients.filter(client => client.leadSource === leadSource);
+
+      const dashboardData: DashboardData = {
+        kpis: calculateKPIs(filteredClients),
+        showUpRates: calculateShowUpRates(filteredClients),
+        funnelData: calculateFunnelData(filteredClients),
+        timeMetrics: calculateTimeMetrics(filteredClients),
+        callMetrics: calculateCallMetrics(filteredClients),
+        trendData: calculateTrendData(filteredClients),
+        leadSources: calculateLeadSources(filteredClients),
+        salespeople: calculateSalespersonPerformance(filteredClients),
+      };
+
+      res.json(dashboardData);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to calculate dashboard data for lead source" });
+    }
+  });
+
+  // Get dashboard data filtered by salesperson
+  app.get("/api/dashboard/salesperson/:name", async (req, res) => {
+    try {
+      const salesperson = decodeURIComponent(req.params.name);
+      const period = req.query.period as string;
+      
+      let clients: Client[];
+      if (period && period !== "all") {
+        const [yearStr, monthStr] = period.split("-");
+        const year = parseInt(yearStr);
+        const month = parseInt(monthStr);
+        clients = await storage.getClientsByMonth(year, month);
+      } else {
+        clients = await storage.getAllClients();
+      }
+      
+      // Filter by salesperson
+      const filteredClients = clients.filter(client => client.salesperson === salesperson);
+
+      const dashboardData: DashboardData = {
+        kpis: calculateKPIs(filteredClients),
+        showUpRates: calculateShowUpRates(filteredClients),
+        funnelData: calculateFunnelData(filteredClients),
+        timeMetrics: calculateTimeMetrics(filteredClients),
+        callMetrics: calculateCallMetrics(filteredClients),
+        trendData: calculateTrendData(filteredClients),
+        leadSources: calculateLeadSources(filteredClients),
+        salespeople: calculateSalespersonPerformance(filteredClients),
+      };
+
+      res.json(dashboardData);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to calculate dashboard data for salesperson" });
     }
   });
 

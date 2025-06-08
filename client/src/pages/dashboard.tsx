@@ -6,14 +6,39 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { KPICard } from "@/components/kpi-card";
 import { ShowUpRatesComponent } from "@/components/show-up-rates";
 import { SankeyDiagram } from "@/components/sankey-diagram";
+import { TrendChart } from "@/components/trend-chart";
+import { LeadSources } from "@/components/lead-sources";
+import { SalespersonPerformanceComponent } from "@/components/salesperson-performance";
 import { DollarSign, Target, ChartGantt, Clock, Phone, TrendingUp } from "lucide-react";
 import { type DashboardData } from "@shared/schema";
 
 export default function Dashboard() {
   const [selectedPeriod, setSelectedPeriod] = useState("all");
+  const [leadSourceFilter, setLeadSourceFilter] = useState("");
+  const [salespersonFilter, setSalespersonFilter] = useState("");
 
   const { data: dashboardData, isLoading } = useQuery<DashboardData>({
-    queryKey: ["/api/dashboard", selectedPeriod],
+    queryKey: ["/api/dashboard", selectedPeriod, leadSourceFilter, salespersonFilter],
+    queryFn: async () => {
+      let url = "/api/dashboard";
+      
+      if (leadSourceFilter) {
+        url = `/api/dashboard/source/${encodeURIComponent(leadSourceFilter)}`;
+      } else if (salespersonFilter) {
+        url = `/api/dashboard/salesperson/${encodeURIComponent(salespersonFilter)}`;
+      }
+      
+      const params = new URLSearchParams();
+      if (selectedPeriod !== "all") {
+        params.append("period", selectedPeriod);
+      }
+      
+      const response = await fetch(`${url}${params.toString() ? `?${params.toString()}` : ""}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch dashboard data');
+      }
+      return response.json();
+    },
   });
 
   const { data: availableMonths = [] } = useQuery<string[]>({
@@ -63,6 +88,16 @@ export default function Dashboard() {
       value: `${change > 0 ? '+' : '-'}${formattedChange}% vs last month`,
       type: change > 0 ? "increase" : change < 0 ? "decrease" : "neutral"
     };
+  };
+
+  const handleLeadSourceFilter = (source: string) => {
+    setLeadSourceFilter(source);
+    setSalespersonFilter(""); // Clear other filter
+  };
+
+  const handleSalespersonFilter = (name: string) => {
+    setSalespersonFilter(name);
+    setLeadSourceFilter(""); // Clear other filter
   };
 
   if (isLoading) {
@@ -183,6 +218,26 @@ export default function Dashboard() {
 
       {/* Show-Up Rates */}
       <ShowUpRatesComponent showUpRates={dashboardData.showUpRates} />
+
+      {/* Lead Sources Analytics */}
+      <LeadSources 
+        data={dashboardData.leadSources} 
+        onSourceFilter={handleLeadSourceFilter}
+        currentFilter={leadSourceFilter}
+      />
+
+      {/* Salesperson Performance */}
+      <SalespersonPerformanceComponent 
+        data={dashboardData.salespeople} 
+        onSalespersonFilter={handleSalespersonFilter}
+        currentFilter={salespersonFilter}
+      />
+
+      {/* Trend Analysis */}
+      <TrendChart 
+        data={dashboardData.trendData} 
+        title="Monthly Performance Trends" 
+      />
 
       {/* Sankey Diagram */}
       <Card>
