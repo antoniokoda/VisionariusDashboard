@@ -188,8 +188,8 @@ export function ClientTable({ clients }: ClientTableProps) {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-900">Sales Opportunity Management</h2>
-        <Button onClick={handleAddClient} className="flex items-center space-x-2 bg-gray-900 text-white hover:bg-gray-800">
+        <h2 className="text-2xl font-bold text-neutral-900">Sales Opportunity Management</h2>
+        <Button onClick={handleAddClient} className="flex items-center space-x-2">
           <Plus className="h-4 w-4" />
           <span>Add New Opportunity</span>
         </Button>
@@ -201,19 +201,19 @@ export function ClientTable({ clients }: ClientTableProps) {
             <table className="w-full">
               <thead className="bg-gray-50 border-b">
                 <tr>
-                  <th className="text-left py-4 px-4 font-medium text-gray-900 text-sm w-40">Sales Opportunity</th>
-                  <th className="text-left py-4 px-4 font-medium text-gray-900 text-sm w-32">Discovery 1</th>
-                  <th className="text-left py-4 px-4 font-medium text-gray-900 text-sm w-32">Discovery 2</th>
-                  <th className="text-left py-4 px-4 font-medium text-gray-900 text-sm w-32">Discovery 3</th>
-                  <th className="text-left py-4 px-4 font-medium text-gray-900 text-sm w-32">Closing 1</th>
-                  <th className="text-left py-4 px-4 font-medium text-gray-900 text-sm w-32">Closing 2</th>
-                  <th className="text-left py-4 px-4 font-medium text-gray-900 text-sm w-32">Closing 3</th>
-                  <th className="text-left py-4 px-4 font-medium text-gray-900 text-sm w-24">Proposal</th>
-                  <th className="text-left py-4 px-4 font-medium text-gray-900 text-sm w-32">Revenue</th>
-                  <th className="text-left py-4 px-4 font-medium text-gray-900 text-sm w-32">Cash Collected</th>
-                  <th className="text-left py-4 px-4 font-medium text-gray-900 text-sm w-24">Deal Status</th>
-                  <th className="text-left py-4 px-4 font-medium text-gray-900 text-sm w-20">Files</th>
-                  <th className="text-left py-4 px-4 font-medium text-gray-900 text-sm w-32">Actions</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-40">Sales Opportunity</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Discovery 1</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Discovery 2</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Discovery 3</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Closing 1</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Closing 2</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Closing 3</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-24">Proposal</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Revenue</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Cash Collected</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-24">Deal Status</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-20">Files</th>
+                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -222,10 +222,10 @@ export function ClientTable({ clients }: ClientTableProps) {
                     key={client.id} 
                     data-client-id={client.id}
                     className={`
-                      border-b transition-all duration-500 ease-out
+                      border-b transition-all duration-500
                       ${highlightedClientId === client.id 
-                        ? 'bg-gray-200 border-gray-400 shadow-lg transform scale-[1.01]' 
-                        : 'hover:bg-gray-100 hover:shadow-md hover:transform hover:scale-[1.005]'
+                        ? 'bg-blue-100 border-blue-300 shadow-md' 
+                        : 'hover:bg-gray-50'
                       }
                     `}
                   >
@@ -235,7 +235,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                           value={client.name}
                           onChange={(e) => handleUpdateClient(client.id, "name", e.target.value)}
                           placeholder="Enter client name..."
-                          className="w-full min-h-[40px] max-h-[80px] border-none bg-transparent focus:outline-none focus:ring-2 focus:ring-gray-300 resize-none overflow-hidden text-sm text-gray-900"
+                          className="w-full min-h-[40px] max-h-[80px] border-none bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none overflow-hidden text-sm"
                           style={{ 
                             height: 'auto',
                             minHeight: '40px'
@@ -247,7 +247,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                           }}
                         />
                         {saveFeedback[client.id] && (
-                          <div className="text-xs text-gray-700 mt-1 flex items-center">
+                          <div className="text-xs text-green-600 mt-1 flex items-center">
                             <Check className="h-3 w-3 mr-1" />
                             Saved
                           </div>
@@ -565,7 +565,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                           variant="ghost"
                           size="icon"
                           onClick={() => openContactsModal(client.id)}
-                          className="text-gray-600 hover:text-gray-800 h-8 w-8"
+                          className="text-green-500 hover:text-green-700 h-8 w-8"
                           title="Manage contacts"
                         >
                           <Users className="h-4 w-4" />
@@ -574,7 +574,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                           variant="ghost"
                           size="icon"
                           onClick={() => openConversation(client.id)}
-                          className="text-gray-600 hover:text-gray-800 h-8 w-8"
+                          className="text-blue-500 hover:text-blue-700 h-8 w-8"
                           title="Open conversation"
                         >
                           <MessageCircle className="h-4 w-4" />
@@ -583,7 +583,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                           variant="ghost"
                           size="icon"
                           onClick={() => handleDeleteClient(client.id)}
-                          className="text-gray-600 hover:text-gray-800 h-8 w-8"
+                          className="text-red-500 hover:text-red-700 h-8 w-8"
                           title="Delete opportunity"
                         >
                           <Trash2 className="h-4 w-4" />

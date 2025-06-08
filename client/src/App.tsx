@@ -15,28 +15,23 @@ function Header() {
   const [location] = useLocation();
 
   return (
-    <header className="glass border-b border-border/30 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-6 py-4">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center space-x-6">
-            <div className="flex items-center space-x-3">
-              <img src={logoPath} alt="Visionarius Logo" className="w-10 h-10 rounded-xl shadow-apple" />
-              <div>
-                <h1 className="text-title font-semibold text-gray-900 tracking-tight">Visionarius Agency</h1>
-                <p className="text-caption text-gray-600">Sales Performance Analytics</p>
-              </div>
+    <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <img src={logoPath} alt="Visionarius Logo" className="w-8 h-8" />
+              <h1 className="text-xl font-bold text-neutral-900">Visionarius Agency</h1>
             </div>
+            <span className="text-neutral-500">|</span>
+            <span className="text-neutral-600 font-medium">Sales Performance</span>
           </div>
 
-          <nav className="flex space-x-2">
+          <nav className="flex space-x-4">
             <Link href="/">
               <Button
-                variant="ghost"
-                className={`apple-button flex items-center space-x-2.5 px-4 py-2.5 rounded-xl text-body font-medium transition-all duration-300 ${
-                  location === "/" 
-                    ? "bg-gray-900 text-white shadow-apple" 
-                    : "text-gray-700 hover:-translate-y-1 hover:shadow-apple"
-                }`}
+                variant={location === "/" ? "default" : "ghost"}
+                className="flex items-center space-x-2"
               >
                 <BarChart3 className="h-4 w-4" />
                 <span>Dashboard</span>
@@ -44,12 +39,8 @@ function Header() {
             </Link>
             <Link href="/data-entry">
               <Button
-                variant="ghost"
-                className={`apple-button flex items-center space-x-2.5 px-4 py-2.5 rounded-xl text-body font-medium transition-all duration-300 ${
-                  location === "/data-entry" 
-                    ? "bg-gray-900 text-white shadow-apple" 
-                    : "text-gray-700 hover:-translate-y-1 hover:shadow-apple"
-                }`}
+                variant={location === "/data-entry" ? "default" : "ghost"}
+                className="flex items-center space-x-2"
               >
                 <Table className="h-4 w-4" />
                 <span>Sales Opportunities</span>
@@ -57,12 +48,8 @@ function Header() {
             </Link>
             <Link href="/calendar">
               <Button
-                variant="ghost"
-                className={`apple-button flex items-center space-x-2.5 px-4 py-2.5 rounded-xl text-body font-medium transition-all duration-300 ${
-                  location === "/calendar" 
-                    ? "bg-gray-900 text-white shadow-apple" 
-                    : "text-gray-700 hover:-translate-y-1 hover:shadow-apple"
-                }`}
+                variant={location === "/calendar" ? "default" : "ghost"}
+                className="flex items-center space-x-2"
               >
                 <CalendarIcon className="h-4 w-4" />
                 <span>Calendar</span>
