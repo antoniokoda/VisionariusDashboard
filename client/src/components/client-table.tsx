@@ -485,7 +485,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                         </td>
                         <td className="py-3 px-4">
                           <Select 
-                            value={client.salesperson || "Other"} 
+                            value={client.salesperson || "Unknown"} 
                             onValueChange={(value) => handleUpdateClient(client.id, "salesperson", value)}
                           >
                             <SelectTrigger className="h-8 text-xs">
