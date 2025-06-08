@@ -84,8 +84,7 @@ export default function Dashboard() {
       <div className="sticky top-0 z-50 glass border-b border-border/30 px-6 py-5">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-headline font-semibold text-foreground tracking-tight">Mission Control</h1>
-            <p className="text-body text-muted-foreground mt-1">Sales Performance Analytics</p>
+            <h1 className="text-headline font-semibold text-gray-900 tracking-tight">Sales Performance Analytics</h1>
           </div>
           
           <div className="flex items-center gap-3">
@@ -112,14 +111,14 @@ export default function Dashboard() {
       {/* Main content with proper spacing */}
       <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
 
-        {/* Apple-style KPI Cards with refined design */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-4">
+        {/* Primary KPI Row - Financial Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <KPICard
             title="Total Revenue"
             value={formatCurrency(dashboardData.kpis.totalRevenue)}
             icon={TrendingUp}
-            iconColor="bg-gradient-to-br from-green-400 to-green-600"
-            valueColor="text-green-600 dark:text-green-400"
+            iconColor="bg-gradient-to-br from-green-500 to-green-700"
+            valueColor="text-gray-900"
             change={formatPercentageChange(dashboardData.kpis.totalRevenueChange)}
           />
 
@@ -127,8 +126,8 @@ export default function Dashboard() {
             title="Cash Collected"
             value={formatCurrency(dashboardData.kpis.cashCollected)}
             icon={DollarSign}
-            iconColor="bg-gradient-to-br from-emerald-400 to-emerald-600"
-            valueColor="text-emerald-600 dark:text-emerald-400"
+            iconColor="bg-gradient-to-br from-emerald-500 to-emerald-700"
+            valueColor="text-gray-900"
             change={formatPercentageChange(dashboardData.kpis.cashCollectedChange)}
           />
 
@@ -136,17 +135,20 @@ export default function Dashboard() {
             title="Closing Rate"
             value={`${dashboardData.kpis.closingRate}%`}
             icon={Target}
-            iconColor="bg-gradient-to-br from-blue-400 to-blue-600"
-            valueColor="text-blue-600 dark:text-blue-400"
+            iconColor="bg-gradient-to-br from-blue-500 to-blue-700"
+            valueColor="text-gray-900"
             change={formatPercentageChange(dashboardData.kpis.closingRateChange)}
           />
+        </div>
 
+        {/* Secondary KPI Row - Activity Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <KPICard
             title="Proposals Pitched"
             value={dashboardData.kpis.proposalsPitched}
             icon={ChartGantt}
-            iconColor="bg-gradient-to-br from-orange-400 to-orange-600"
-            valueColor="text-orange-600 dark:text-orange-400"
+            iconColor="bg-gradient-to-br from-orange-500 to-orange-700"
+            valueColor="text-gray-900"
             change={formatPercentageChange(dashboardData.kpis.proposalsPitchedChange)}
           />
 
@@ -154,8 +156,8 @@ export default function Dashboard() {
             title="Avg Sales Cycle"
             value={formatDays(dashboardData.kpis.avgSalesCycle)}
             icon={Clock}
-            iconColor="bg-gradient-to-br from-gray-400 to-gray-600"
-            valueColor="text-gray-600 dark:text-gray-400"
+            iconColor="bg-gradient-to-br from-gray-500 to-gray-700"
+            valueColor="text-gray-900"
             change={formatPercentageChange(dashboardData.kpis.avgSalesCycleChange)}
           />
 
@@ -163,8 +165,8 @@ export default function Dashboard() {
             title="Total Calls"
             value={dashboardData.kpis.totalCalls}
             icon={Phone}
-            iconColor="bg-gradient-to-br from-purple-400 to-purple-600"
-            valueColor="text-purple-600 dark:text-purple-400"
+            iconColor="bg-gradient-to-br from-purple-500 to-purple-700"
+            valueColor="text-gray-900"
             change={formatPercentageChange(dashboardData.kpis.totalCallsChange)}
           />
 
@@ -172,8 +174,8 @@ export default function Dashboard() {
             title="Average Deal Size"
             value={formatCurrency(dashboardData.kpis.avgDealSize)}
             icon={BarChart3}
-            iconColor="bg-gradient-to-br from-indigo-400 to-indigo-600"
-            valueColor="text-indigo-600 dark:text-indigo-400"
+            iconColor="bg-gradient-to-br from-indigo-500 to-indigo-700"
+            valueColor="text-gray-900"
             change={formatPercentageChange(dashboardData.kpis.avgDealSizeChange)}
           />
         </div>
@@ -181,88 +183,88 @@ export default function Dashboard() {
       {/* Show-Up Rates */}
       <ShowUpRatesComponent showUpRates={dashboardData.showUpRates} />
 
-      {/* Sankey Diagram */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Sales Funnel Flow</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <SankeyDiagram data={dashboardData.funnelData} />
-        </CardContent>
-      </Card>
-
-      {/* Time & Averages Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Time-Based Metrics */}
-        <Card>
+        {/* Sankey Diagram */}
+        <Card className="apple-card">
           <CardHeader>
-            <CardTitle>Time Metrics</CardTitle>
+            <CardTitle className="text-gray-900">Sales Funnel Flow</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                <span className="text-sm text-neutral-600">Avg First Discovery to First Closing</span>
-                <span className="font-semibold text-neutral-900">
-                  {formatDays(dashboardData.timeMetrics.discoveryToClosing)}
-                </span>
-              </div>
-              <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                <span className="text-sm text-neutral-600">Avg First Discovery to Final Close</span>
-                <span className="font-semibold text-neutral-900">
-                  {formatDays(dashboardData.timeMetrics.discoveryToFinalClose)}
-                </span>
-              </div>
-              <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                <span className="text-sm text-neutral-600">Avg Between Discovery Calls</span>
-                <span className="font-semibold text-neutral-900">
-                  {formatDays(dashboardData.timeMetrics.betweenDiscovery)}
-                </span>
-              </div>
-              <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                <span className="text-sm text-neutral-600">Avg Between Closing Calls</span>
-                <span className="font-semibold text-neutral-900">
-                  {formatDays(dashboardData.timeMetrics.betweenClosing)}
-                </span>
-              </div>
-              <div className="flex justify-between items-center py-3">
-                <span className="text-sm text-neutral-600">Avg Sales Cycle Duration</span>
-                <span className="font-semibold text-neutral-900">
-                  {formatDays(dashboardData.timeMetrics.salesCycle)}
-                </span>
-              </div>
-            </div>
+            <SankeyDiagram data={dashboardData.funnelData} />
           </CardContent>
         </Card>
 
-        {/* Call Duration & Revenue Averages */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Call Duration & Revenue</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                <span className="text-sm text-neutral-600">Avg Discovery Call Duration</span>
-                <span className="font-semibold text-neutral-900">
-                  {formatMinutes(dashboardData.callMetrics.discoveryDuration)}
-                </span>
+        {/* Time & Averages Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Time-Based Metrics */}
+          <Card className="apple-card">
+            <CardHeader>
+              <CardTitle className="text-gray-900">Time Metrics</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center py-3 border-b border-gray-200">
+                  <span className="text-body text-gray-600">Avg First Discovery to First Closing</span>
+                  <span className="font-semibold text-gray-900">
+                    {formatDays(dashboardData.timeMetrics.discoveryToClosing)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-3 border-b border-gray-200">
+                  <span className="text-body text-gray-600">Avg First Discovery to Final Close</span>
+                  <span className="font-semibold text-gray-900">
+                    {formatDays(dashboardData.timeMetrics.discoveryToFinalClose)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-3 border-b border-gray-200">
+                  <span className="text-body text-gray-600">Avg Between Discovery Calls</span>
+                  <span className="font-semibold text-gray-900">
+                    {formatDays(dashboardData.timeMetrics.betweenDiscovery)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-3 border-b border-gray-200">
+                  <span className="text-body text-gray-600">Avg Between Closing Calls</span>
+                  <span className="font-semibold text-gray-900">
+                    {formatDays(dashboardData.timeMetrics.betweenClosing)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-3">
+                  <span className="text-body text-gray-600">Avg Sales Cycle Duration</span>
+                  <span className="font-semibold text-gray-900">
+                    {formatDays(dashboardData.timeMetrics.salesCycle)}
+                  </span>
+                </div>
               </div>
-              <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                <span className="text-sm text-neutral-600">Avg Closing Call Duration</span>
-                <span className="font-semibold text-neutral-900">
-                  {formatMinutes(dashboardData.callMetrics.closingDuration)}
-                </span>
+            </CardContent>
+          </Card>
+
+          {/* Call Duration & Revenue Averages */}
+          <Card className="apple-card">
+            <CardHeader>
+              <CardTitle className="text-gray-900">Call Duration & Revenue</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center py-3 border-b border-gray-200">
+                  <span className="text-body text-gray-600">Avg Discovery Call Duration</span>
+                  <span className="font-semibold text-gray-900">
+                    {formatMinutes(dashboardData.callMetrics.discoveryDuration)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-3 border-b border-gray-200">
+                  <span className="text-body text-gray-600">Avg Closing Call Duration</span>
+                  <span className="font-semibold text-gray-900">
+                    {formatMinutes(dashboardData.callMetrics.closingDuration)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-3">
+                  <span className="text-body text-gray-600">Avg Revenue per Client</span>
+                  <span className="font-semibold text-green-700 text-lg">
+                    {formatCurrency(dashboardData.callMetrics.avgRevenue)}
+                  </span>
+                </div>
               </div>
-              <div className="flex justify-between items-center py-3">
-                <span className="text-sm text-neutral-600">Avg Revenue per Client</span>
-                <span className="font-semibold text-green-600 text-lg">
-                  {formatCurrency(dashboardData.callMetrics.avgRevenue)}
-                </span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

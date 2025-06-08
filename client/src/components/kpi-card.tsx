@@ -37,13 +37,13 @@ export function KPICard({
   const getChangeColor = () => {
     switch (change?.type) {
       case "increase":
-        return "text-green-600 dark:text-green-400";
+        return "text-green-700";
       case "decrease":
-        return "text-red-600 dark:text-red-400";
+        return "text-red-700";
       case "neutral":
-        return "text-muted-foreground";
+        return "text-gray-600";
       default:
-        return "text-muted-foreground";
+        return "text-gray-600";
     }
   };
 
@@ -52,7 +52,7 @@ export function KPICard({
       <CardContent className="p-6">
         <div className="flex items-start justify-between">
           <div className="flex-1 space-y-3">
-            <p className="text-caption font-medium text-muted-foreground tracking-wide uppercase">{title}</p>
+            <p className="text-caption font-medium text-gray-600 tracking-wide uppercase">{title}</p>
             <p className={`text-title-large font-semibold ${valueColor} tracking-tight leading-none`}>{value}</p>
             {change && (
               <div className={`flex items-center space-x-1.5 text-caption font-medium ${getChangeColor()}`}>

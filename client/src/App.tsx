@@ -22,8 +22,8 @@ function Header() {
             <div className="flex items-center space-x-3">
               <img src={logoPath} alt="Visionarius Logo" className="w-10 h-10 rounded-xl shadow-apple" />
               <div>
-                <h1 className="text-title font-semibold text-foreground tracking-tight">Visionarius Agency</h1>
-                <p className="text-caption text-muted-foreground">Sales Performance Analytics</p>
+                <h1 className="text-title font-semibold text-gray-900 tracking-tight">Visionarius Agency</h1>
+                <p className="text-caption text-gray-600">Sales Performance Analytics</p>
               </div>
             </div>
           </div>
