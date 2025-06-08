@@ -61,7 +61,7 @@ function Header() {
                 </Button>
               </Link>
             </nav>
-            {user && (
+            {user ? (
               <Button 
                 variant="outline" 
                 onClick={() => window.location.href = '/api/logout'}
@@ -70,7 +70,7 @@ function Header() {
                 <LogOut className="h-4 w-4" />
                 <span>Sign Out</span>
               </Button>
-            )}
+            ) : null}
           </div>
         </div>
       </div>
@@ -81,20 +81,23 @@ function Header() {
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
 
+  if (isLoading || !isAuthenticated) {
+    return <Landing />;
+  }
+
   return (
-    <Switch>
-      {isLoading || !isAuthenticated ? (
-        <Route path="/" component={Landing} />
-      ) : (
-        <>
+    <div className="min-h-screen bg-neutral-50">
+      <Header />
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <Switch>
           <Route path="/" component={Home} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/data-entry" component={DataEntry} />
           <Route path="/calendar" component={Calendar} />
-        </>
-      )}
-      <Route component={NotFound} />
-    </Switch>
+          <Route component={NotFound} />
+        </Switch>
+      </main>
+    </div>
   );
 }
 

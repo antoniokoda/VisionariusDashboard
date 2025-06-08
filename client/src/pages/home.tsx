@@ -13,7 +13,7 @@ export default function Home() {
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
-              Welcome back, {user?.firstName || user?.email || 'User'}
+              Welcome back, {(user as any)?.firstName || (user as any)?.email || 'User'}
             </h1>
             <p className="text-gray-600">Visionarius Agency Sales Management</p>
           </div>
