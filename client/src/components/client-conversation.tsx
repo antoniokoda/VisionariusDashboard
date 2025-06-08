@@ -10,6 +10,7 @@ import { format } from "date-fns";
 import { enUS } from "date-fns/locale";
 import { type ConversationMessage } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
+import { useAuth } from "@/hooks/useAuth";
 
 interface ClientConversationProps {
   isOpen: boolean;
@@ -25,9 +26,9 @@ export function ClientConversation({
   clientName 
 }: ClientConversationProps) {
   const [newMessage, setNewMessage] = useState("");
-  const [userName] = useState("User"); // In a real app, this would come from auth
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   const { data: messages = [], isLoading } = useQuery<ConversationMessage[]>({
     queryKey: [`/api/clients/${clientId}/conversation`],
@@ -35,7 +36,7 @@ export function ClientConversation({
   });
 
   const addMessageMutation = useMutation({
-    mutationFn: async (message: { message: string; userId: string; userName: string; type?: string }) => {
+    mutationFn: async (message: { message: string; userId: number; userName: string; type?: string }) => {
       const response = await apiRequest("POST", `/api/clients/${clientId}/conversation`, message);
       return response.json();
     },
@@ -55,10 +56,12 @@ export function ClientConversation({
     e.preventDefault();
     if (!newMessage.trim()) return;
 
+    if (!user) return;
+    
     addMessageMutation.mutate({
       message: newMessage.trim(),
-      userId: "1", // In a real app, this would come from auth
-      userName: userName,
+      userId: user.id,
+      userName: user.username,
       type: "text"
     });
   };

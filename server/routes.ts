@@ -6,6 +6,19 @@ import { calculateKPIs, calculateShowUpRates, calculateFunnelData, calculateTime
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
+  // Authentication routes
+  app.get('/api/auth/user', async (req, res) => {
+    // For now, return a mock user - in production this would check session/JWT
+    const user = {
+      id: 1,
+      username: 'admin',
+      email: 'admin@visionarius.com',
+      firstName: 'Admin',
+      lastName: 'User'
+    };
+    res.json(user);
+  });
+
   // Get all clients
   app.get("/api/clients", async (req, res) => {
     try {
