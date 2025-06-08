@@ -29,6 +29,28 @@ export function ClientTable({ clients }: ClientTableProps) {
   const [playMediaEffect, setPlayMediaEffect] = useState(false);
   const [currentMediaType, setCurrentMediaType] = useState<'won' | 'lost' | 'pitched' | null>(null);
   const tableRef = useRef<HTMLTableElement>(null);
+
+  // Predefined options for dropdowns
+  const leadSourceOptions = [
+    "Referrals",
+    "Cold Calling",
+    "Skool Community",
+    "YouTube",
+    "Members of the team"
+  ];
+
+  const salespersonOptions = [
+    "John Smith",
+    "Sarah Johnson", 
+    "Michael Chen",
+    "Emily Davis",
+    "David Wilson",
+    "Lisa Anderson",
+    "Robert Brown",
+    "Jessica Taylor",
+    "Mark Thompson",
+    "Other"
+  ];
   const queryClient = useQueryClient();
   const debounceTimers = useRef<{ [key: string]: NodeJS.Timeout }>({});
 
@@ -156,6 +178,8 @@ export function ClientTable({ clients }: ClientTableProps) {
       proposalStatus: "N/A",
       revenue: "0",
       files: "[]",
+      leadSource: "Referrals",
+      salesperson: "Unknown",
     };
 
     createClientMutation.mutate(newClient);
@@ -443,9 +467,39 @@ export function ClientTable({ clients }: ClientTableProps) {
                       </div>
                     </td>
                         <td className="py-3 px-4">
-                            <Badge variant="outline">{client.leadSource || "Referrals"}</Badge>
+                          <Select 
+                            value={client.leadSource || "Referrals"} 
+                            onValueChange={(value) => handleUpdateClient(client.id, "leadSource", value)}
+                          >
+                            <SelectTrigger className="h-8 text-xs">
+                              <SelectValue placeholder="Select lead source" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {leadSourceOptions.map((source) => (
+                                <SelectItem key={source} value={source}>
+                                  {source}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </td>
-                        <td className="py-3 px-4">{client.salesperson || "Unknown"}</td>
+                        <td className="py-3 px-4">
+                          <Select 
+                            value={client.salesperson || "Other"} 
+                            onValueChange={(value) => handleUpdateClient(client.id, "salesperson", value)}
+                          >
+                            <SelectTrigger className="h-8 text-xs">
+                              <SelectValue placeholder="Select salesperson" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {salespersonOptions.map((person) => (
+                                <SelectItem key={person} value={person}>
+                                  {person}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </td>
 
                     {/* Discovery 1 */}
                     <td className="py-3 px-4">
