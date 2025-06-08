@@ -103,8 +103,8 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Top-Level KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-6">
+      {/* Top-Level KPI Cards - Row 1: Revenue Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <KPICard
           title="Total Revenue"
           value={formatCurrency(dashboardData.kpis.totalRevenue)}
@@ -131,7 +131,10 @@ export default function Dashboard() {
           valueColor="text-blue-600"
           change={formatPercentageChange(dashboardData.kpis.closingRateChange)}
         />
+      </div>
 
+      {/* KPI Cards - Row 2: Performance Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <KPICard
           title="Proposals Pitched"
           value={dashboardData.kpis.proposalsPitched}
