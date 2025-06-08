@@ -458,7 +458,7 @@ export function ClientTable({ clients }: ClientTableProps) {
 
       <Card>
         <CardContent className="p-0">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto max-h-[70vh] overflow-y-auto">
             <table className="w-full">
               <thead className="bg-gray-100 border-b-2 border-gray-300 sticky top-0 z-10">
                 <tr>
@@ -539,9 +539,14 @@ export function ClientTable({ clients }: ClientTableProps) {
                           <Select 
                             value={client.leadSource || "Referrals"} 
                             onValueChange={(value) => {
-                              if (value.startsWith("__ADD__")) {
+                              if (value === "__ADD__") {
                                 const newSource = prompt("Enter new lead source:");
-                                if (newSource) addLeadSource(newSource);
+                                if (newSource && newSource.trim()) {
+                                  addLeadSource(newSource.trim());
+                                }
+                              } else if (value.startsWith("__DELETE__")) {
+                                const sourceToDelete = value.replace("__DELETE__", "");
+                                confirmDelete('lead', sourceToDelete);
                               } else {
                                 handleUpdateClient(client.id, "leadSource", value);
                               }
@@ -560,21 +565,24 @@ export function ClientTable({ clients }: ClientTableProps) {
                                 <SelectItem key={source} value={source}>
                                   <div className="flex items-center justify-between w-full">
                                     <span>{source}</span>
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        confirmDelete('lead', source);
-                                      }}
-                                      className="text-red-500 hover:text-red-700 h-5 w-5 p-0 ml-2"
-                                    >
-                                      <X className="h-3 w-3" />
-                                    </Button>
+                                    <span className="text-xs text-blue-600">(Custom)</span>
                                   </div>
                                 </SelectItem>
                               ))}
-                              <SelectItem value="__ADD__" className="text-blue-600 font-medium">
+                              {customLeadSources.length > 0 && (
+                                <>
+                                  <div className="px-2 py-1 text-xs text-gray-500 border-t">Remove Custom:</div>
+                                  {customLeadSources.map((source) => (
+                                    <SelectItem key={`delete-${source}`} value={`__DELETE__${source}`} className="text-red-600">
+                                      <div className="flex items-center">
+                                        <X className="h-3 w-3 mr-1" />
+                                        Remove "{source}"
+                                      </div>
+                                    </SelectItem>
+                                  ))}
+                                </>
+                              )}
+                              <SelectItem value="__ADD__" className="text-blue-600 font-medium border-t">
                                 <div className="flex items-center">
                                   <Plus className="h-3 w-3 mr-1" />
                                   Add New Lead Source...
@@ -587,9 +595,14 @@ export function ClientTable({ clients }: ClientTableProps) {
                           <Select 
                             value={client.salesperson || "Unknown"} 
                             onValueChange={(value) => {
-                              if (value.startsWith("__ADD__")) {
+                              if (value === "__ADD__") {
                                 const newPerson = prompt("Enter new salesperson:");
-                                if (newPerson) addSalesperson(newPerson);
+                                if (newPerson && newPerson.trim()) {
+                                  addSalesperson(newPerson.trim());
+                                }
+                              } else if (value.startsWith("__DELETE__")) {
+                                const personToDelete = value.replace("__DELETE__", "");
+                                confirmDelete('salesperson', personToDelete);
                               } else {
                                 handleUpdateClient(client.id, "salesperson", value);
                               }
@@ -608,21 +621,24 @@ export function ClientTable({ clients }: ClientTableProps) {
                                 <SelectItem key={person} value={person}>
                                   <div className="flex items-center justify-between w-full">
                                     <span>{person}</span>
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        confirmDelete('salesperson', person);
-                                      }}
-                                      className="text-red-500 hover:text-red-700 h-5 w-5 p-0 ml-2"
-                                    >
-                                      <X className="h-3 w-3" />
-                                    </Button>
+                                    <span className="text-xs text-blue-600">(Custom)</span>
                                   </div>
                                 </SelectItem>
                               ))}
-                              <SelectItem value="__ADD__" className="text-blue-600 font-medium">
+                              {customSalespeople.length > 0 && (
+                                <>
+                                  <div className="px-2 py-1 text-xs text-gray-500 border-t">Remove Custom:</div>
+                                  {customSalespeople.map((person) => (
+                                    <SelectItem key={`delete-${person}`} value={`__DELETE__${person}`} className="text-red-600">
+                                      <div className="flex items-center">
+                                        <X className="h-3 w-3 mr-1" />
+                                        Remove "{person}"
+                                      </div>
+                                    </SelectItem>
+                                  ))}
+                                </>
+                              )}
+                              <SelectItem value="__ADD__" className="text-blue-600 font-medium border-t">
                                 <div className="flex items-center">
                                   <Plus className="h-3 w-3 mr-1" />
                                   Add New Salesperson...
