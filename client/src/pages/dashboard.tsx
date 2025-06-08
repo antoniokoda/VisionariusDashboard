@@ -6,7 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { KPICard } from "@/components/kpi-card";
 import { ShowUpRatesComponent } from "@/components/show-up-rates";
 import { SankeyDiagram } from "@/components/sankey-diagram";
-import { DollarSign, Target, ChartGantt, Clock, Phone, TrendingUp } from "lucide-react";
+import { DollarSign, Target, ChartGantt, Clock, Phone, TrendingUp, BarChart3 } from "lucide-react";
 import { type DashboardData } from "@shared/schema";
 
 export default function Dashboard() {
@@ -79,95 +79,104 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-8">
-      {/* Header with Filter */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-neutral-900">Mission Control Dashboard</h1>
-          <p className="text-neutral-600">Sales performance overview</p>
-        </div>
-        <div className="flex items-center space-x-3">
-          <label className="text-sm font-medium text-neutral-600">Filter Period:</label>
-          <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-            <SelectTrigger className="w-48">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {periodOptions.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+    <div className="min-h-screen bg-background">
+      {/* Apple-style sticky header with glass morphism */}
+      <div className="sticky top-0 z-50 glass border-b border-border/30 px-6 py-5">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-headline font-semibold text-foreground tracking-tight">Mission Control</h1>
+            <p className="text-body text-muted-foreground mt-1">Sales Performance Analytics</p>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
+              <SelectTrigger className="w-52 h-11 rounded-xl border-border/50 bg-card/50 backdrop-blur-sm apple-button text-body font-medium">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="rounded-2xl border-border/50 bg-card/95 backdrop-blur-xl shadow-apple-lg">
+                {periodOptions.map((option) => (
+                  <SelectItem 
+                    key={option.value} 
+                    value={option.value}
+                    className="rounded-xl focus:bg-primary/8 text-body"
+                  >
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </div>
 
-      {/* Top-Level KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-6">
-        <KPICard
-          title="Total Revenue"
-          value={formatCurrency(dashboardData.kpis.totalRevenue)}
-          icon={TrendingUp}
-          iconColor="bg-emerald-500"
-          valueColor="text-emerald-600"
-          change={formatPercentageChange(dashboardData.kpis.totalRevenueChange)}
-        />
+      {/* Main content with proper spacing */}
+      <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
 
-        <KPICard
-          title="Cash Collected"
-          value={formatCurrency(dashboardData.kpis.cashCollected)}
-          icon={DollarSign}
-          iconColor="bg-green-500"
-          valueColor="text-green-600"
-          change={formatPercentageChange(dashboardData.kpis.cashCollectedChange)}
-        />
+        {/* Apple-style KPI Cards with refined design */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-4">
+          <KPICard
+            title="Total Revenue"
+            value={formatCurrency(dashboardData.kpis.totalRevenue)}
+            icon={TrendingUp}
+            iconColor="bg-gradient-to-br from-green-400 to-green-600"
+            valueColor="text-green-600 dark:text-green-400"
+            change={formatPercentageChange(dashboardData.kpis.totalRevenueChange)}
+          />
 
-        <KPICard
-          title="Closing Rate"
-          value={`${dashboardData.kpis.closingRate}%`}
-          icon={Target}
-          iconColor="bg-blue-500"
-          valueColor="text-blue-600"
-          change={formatPercentageChange(dashboardData.kpis.closingRateChange)}
-        />
+          <KPICard
+            title="Cash Collected"
+            value={formatCurrency(dashboardData.kpis.cashCollected)}
+            icon={DollarSign}
+            iconColor="bg-gradient-to-br from-emerald-400 to-emerald-600"
+            valueColor="text-emerald-600 dark:text-emerald-400"
+            change={formatPercentageChange(dashboardData.kpis.cashCollectedChange)}
+          />
 
-        <KPICard
-          title="Proposals Pitched"
-          value={dashboardData.kpis.proposalsPitched}
-          icon={ChartGantt}
-          iconColor="bg-yellow-500"
-          valueColor="text-yellow-600"
-          change={formatPercentageChange(dashboardData.kpis.proposalsPitchedChange)}
-        />
+          <KPICard
+            title="Closing Rate"
+            value={`${dashboardData.kpis.closingRate}%`}
+            icon={Target}
+            iconColor="bg-gradient-to-br from-blue-400 to-blue-600"
+            valueColor="text-blue-600 dark:text-blue-400"
+            change={formatPercentageChange(dashboardData.kpis.closingRateChange)}
+          />
 
-        <KPICard
-          title="Avg Sales Cycle"
-          value={formatDays(dashboardData.kpis.avgSalesCycle)}
-          icon={Clock}
-          iconColor="bg-gray-500"
-          valueColor="text-neutral-700"
-          change={formatPercentageChange(dashboardData.kpis.avgSalesCycleChange)}
-        />
+          <KPICard
+            title="Proposals Pitched"
+            value={dashboardData.kpis.proposalsPitched}
+            icon={ChartGantt}
+            iconColor="bg-gradient-to-br from-orange-400 to-orange-600"
+            valueColor="text-orange-600 dark:text-orange-400"
+            change={formatPercentageChange(dashboardData.kpis.proposalsPitchedChange)}
+          />
 
-        <KPICard
-          title="Total Calls"
-          value={dashboardData.kpis.totalCalls}
-          icon={Phone}
-          iconColor="bg-purple-500"
-          valueColor="text-purple-600"
-          change={formatPercentageChange(dashboardData.kpis.totalCallsChange)}
-        />
+          <KPICard
+            title="Avg Sales Cycle"
+            value={formatDays(dashboardData.kpis.avgSalesCycle)}
+            icon={Clock}
+            iconColor="bg-gradient-to-br from-gray-400 to-gray-600"
+            valueColor="text-gray-600 dark:text-gray-400"
+            change={formatPercentageChange(dashboardData.kpis.avgSalesCycleChange)}
+          />
 
-        <KPICard
-          title="Average Deal Size"
-          value={formatCurrency(dashboardData.kpis.avgDealSize)}
-          icon={TrendingUp}
-          iconColor="bg-indigo-500"
-          valueColor="text-indigo-600"
-          change={formatPercentageChange(dashboardData.kpis.avgDealSizeChange)}
-        />
-      </div>
+          <KPICard
+            title="Total Calls"
+            value={dashboardData.kpis.totalCalls}
+            icon={Phone}
+            iconColor="bg-gradient-to-br from-purple-400 to-purple-600"
+            valueColor="text-purple-600 dark:text-purple-400"
+            change={formatPercentageChange(dashboardData.kpis.totalCallsChange)}
+          />
+
+          <KPICard
+            title="Average Deal Size"
+            value={formatCurrency(dashboardData.kpis.avgDealSize)}
+            icon={BarChart3}
+            iconColor="bg-gradient-to-br from-indigo-400 to-indigo-600"
+            valueColor="text-indigo-600 dark:text-indigo-400"
+            change={formatPercentageChange(dashboardData.kpis.avgDealSizeChange)}
+          />
+        </div>
 
       {/* Show-Up Rates */}
       <ShowUpRatesComponent showUpRates={dashboardData.showUpRates} />
@@ -253,6 +262,7 @@ export default function Dashboard() {
             </div>
           </CardContent>
         </Card>
+      </div>
       </div>
     </div>
   );
