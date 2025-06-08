@@ -34,26 +34,9 @@ export function ClientTable({ clients }: ClientTableProps) {
   const tableRef = useRef<HTMLTableElement>(null);
 
   // Predefined options for dropdowns
-  const baseLeadSourceOptions = [
-    "Referrals",
-    "Cold Calling",
-    "Skool Community",
-    "YouTube",
-    "Members of the team"
-  ];
+  const baseLeadSourceOptions: string[] = [];
 
-  const baseSalespersonOptions = [
-    "John Smith",
-    "Sarah Johnson", 
-    "Michael Chen",
-    "Emily Davis",
-    "David Wilson",
-    "Lisa Anderson",
-    "Robert Brown",
-    "Jessica Taylor",
-    "Mark Thompson",
-    "Unknown"
-  ];
+  const baseSalespersonOptions: string[] = [];
 
   // Combined options including custom ones
   const leadSourceOptions = [...baseLeadSourceOptions, ...customLeadSources];
