@@ -3,27 +3,24 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertClientSchema, updateClientSchema, type DashboardData, type CalendarEvent, type Client } from "@shared/schema";
 import { calculateKPIs, calculateShowUpRates, calculateFunnelData, calculateTimeMetrics, calculateCallMetrics, calculateTrendData, calculateLeadSources, calculateSalespersonPerformance } from "../client/src/lib/calculations";
-import { setupAuth, isAuthenticated } from "./replitAuth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
-  // Set up Replit Auth middleware
-  await setupAuth(app);
-
   // Authentication routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
-    }
+  app.get('/api/auth/user', async (req, res) => {
+    // For now, return a mock user - in production this would check session/JWT
+    const user = {
+      id: 1,
+      username: 'admin',
+      email: 'admin@visionarius.com',
+      firstName: 'Admin',
+      lastName: 'User'
+    };
+    res.json(user);
   });
 
   // Get available months with data
-  app.get("/api/available-months", isAuthenticated, async (req, res) => {
+  app.get("/api/available-months", async (req, res) => {
     try {
       const clients = await storage.getAllClients();
       const monthsSet = new Set<string>();
@@ -45,7 +42,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get all clients
-  app.get("/api/clients", isAuthenticated, async (req, res) => {
+  app.get("/api/clients", async (req, res) => {
     try {
       const clients = await storage.getAllClients();
       res.json(clients);
@@ -55,7 +52,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get clients by month
-  app.get("/api/clients/month/:year/:month", isAuthenticated, async (req, res) => {
+  app.get("/api/clients/month/:year/:month", async (req, res) => {
     try {
       const year = parseInt(req.params.year);
       const month = parseInt(req.params.month);
@@ -67,7 +64,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Create new client
-  app.post("/api/clients", isAuthenticated, async (req, res) => {
+  app.post("/api/clients", async (req, res) => {
     try {
       const validatedData = insertClientSchema.parse(req.body);
       const client = await storage.createClient(validatedData);

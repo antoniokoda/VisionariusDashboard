@@ -4,19 +4,15 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { BarChart3, Table, Calendar as CalendarIcon, LogOut } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
+import { BarChart3, Table, Calendar as CalendarIcon } from "lucide-react";
 import Dashboard from "@/pages/dashboard";
 import DataEntry from "@/pages/data-entry";
 import Calendar from "@/pages/calendar";
 import NotFound from "@/pages/not-found";
-import Landing from "@/pages/landing";
-import Home from "@/pages/home";
 import logoPath from "@assets/Untitled design (1)_1749318828090.png";
 
 function Header() {
   const [location] = useLocation();
-  const { user } = useAuth();
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
@@ -31,47 +27,35 @@ function Header() {
             <span className="text-neutral-600 font-medium">Sales Performance</span>
           </div>
 
-          <div className="flex items-center space-x-4">
-            <nav className="flex space-x-4">
-              <Link href="/">
-                <Button
-                  variant={location === "/" ? "default" : "ghost"}
-                  className="flex items-center space-x-2"
-                >
-                  <BarChart3 className="h-4 w-4" />
-                  <span>Dashboard</span>
-                </Button>
-              </Link>
-              <Link href="/data-entry">
-                <Button
-                  variant={location === "/data-entry" ? "default" : "ghost"}
-                  className="flex items-center space-x-2"
-                >
-                  <Table className="h-4 w-4" />
-                  <span>Sales Opportunities</span>
-                </Button>
-              </Link>
-              <Link href="/calendar">
-                <Button
-                  variant={location === "/calendar" ? "default" : "ghost"}
-                  className="flex items-center space-x-2"
-                >
-                  <CalendarIcon className="h-4 w-4" />
-                  <span>Calendar</span>
-                </Button>
-              </Link>
-            </nav>
-            {user ? (
-              <Button 
-                variant="outline" 
-                onClick={() => window.location.href = '/api/logout'}
+          <nav className="flex space-x-4">
+            <Link href="/">
+              <Button
+                variant={location === "/" ? "default" : "ghost"}
                 className="flex items-center space-x-2"
               >
-                <LogOut className="h-4 w-4" />
-                <span>Sign Out</span>
+                <BarChart3 className="h-4 w-4" />
+                <span>Dashboard</span>
               </Button>
-            ) : null}
-          </div>
+            </Link>
+            <Link href="/data-entry">
+              <Button
+                variant={location === "/data-entry" ? "default" : "ghost"}
+                className="flex items-center space-x-2"
+              >
+                <Table className="h-4 w-4" />
+                <span>Sales Opportunities</span>
+              </Button>
+            </Link>
+            <Link href="/calendar">
+              <Button
+                variant={location === "/calendar" ? "default" : "ghost"}
+                className="flex items-center space-x-2"
+              >
+                <CalendarIcon className="h-4 w-4" />
+                <span>Calendar</span>
+              </Button>
+            </Link>
+          </nav>
         </div>
       </div>
     </header>
@@ -79,19 +63,12 @@ function Header() {
 }
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
-
-  if (isLoading || !isAuthenticated) {
-    return <Landing />;
-  }
-
   return (
     <div className="min-h-screen bg-neutral-50">
       <Header />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Switch>
-          <Route path="/" component={Home} />
-          <Route path="/dashboard" component={Dashboard} />
+          <Route path="/" component={Dashboard} />
           <Route path="/data-entry" component={DataEntry} />
           <Route path="/calendar" component={Calendar} />
           <Route component={NotFound} />
