@@ -9,7 +9,7 @@ import { FileUploadModal } from "./file-upload-modal";
 import { ClientConversation } from "./client-conversation";
 import { ContactsModal } from "./contacts-modal";
 import { DatePicker } from "./ui/date-picker";
-import { Plus, Trash2, ExternalLink, Folder, Check, MessageCircle, Users } from "lucide-react";
+import { Plus, Trash2, ExternalLink, Folder, Check, MessageCircle, Users, Settings, X } from "lucide-react";
 import { MediaEffects } from "./media-effects";
 import { type Client, type InsertClient, type UpdateClient } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
@@ -28,10 +28,15 @@ export function ClientTable({ clients }: ClientTableProps) {
   const [highlightedClientId, setHighlightedClientId] = useState<number | null>(null);
   const [playMediaEffect, setPlayMediaEffect] = useState(false);
   const [currentMediaType, setCurrentMediaType] = useState<'won' | 'lost' | 'pitched' | null>(null);
+  const [showManageOptions, setShowManageOptions] = useState(false);
+  const [customLeadSources, setCustomLeadSources] = useState<string[]>([]);
+  const [customSalespeople, setCustomSalespeople] = useState<string[]>([]);
+  const [newLeadSource, setNewLeadSource] = useState("");
+  const [newSalesperson, setNewSalesperson] = useState("");
   const tableRef = useRef<HTMLTableElement>(null);
 
   // Predefined options for dropdowns
-  const leadSourceOptions = [
+  const baseLeadSourceOptions = [
     "Referrals",
     "Cold Calling",
     "Skool Community",
@@ -39,7 +44,7 @@ export function ClientTable({ clients }: ClientTableProps) {
     "Members of the team"
   ];
 
-  const salespersonOptions = [
+  const baseSalespersonOptions = [
     "John Smith",
     "Sarah Johnson", 
     "Michael Chen",
@@ -49,10 +54,63 @@ export function ClientTable({ clients }: ClientTableProps) {
     "Robert Brown",
     "Jessica Taylor",
     "Mark Thompson",
-    "Other"
+    "Unknown"
   ];
+
+  // Combined options including custom ones
+  const leadSourceOptions = [...baseLeadSourceOptions, ...customLeadSources];
+  const salespersonOptions = [...baseSalespersonOptions, ...customSalespeople];
   const queryClient = useQueryClient();
   const debounceTimers = useRef<{ [key: string]: NodeJS.Timeout }>({});
+
+  // Load custom options from localStorage
+  useEffect(() => {
+    const savedLeadSources = localStorage.getItem('customLeadSources');
+    const savedSalespeople = localStorage.getItem('customSalespeople');
+    
+    if (savedLeadSources) {
+      setCustomLeadSources(JSON.parse(savedLeadSources));
+    }
+    if (savedSalespeople) {
+      setCustomSalespeople(JSON.parse(savedSalespeople));
+    }
+  }, []);
+
+  // Save custom options to localStorage
+  const saveCustomOptions = () => {
+    localStorage.setItem('customLeadSources', JSON.stringify(customLeadSources));
+    localStorage.setItem('customSalespeople', JSON.stringify(customSalespeople));
+  };
+
+  const addLeadSource = () => {
+    if (newLeadSource.trim() && !leadSourceOptions.includes(newLeadSource.trim())) {
+      const updated = [...customLeadSources, newLeadSource.trim()];
+      setCustomLeadSources(updated);
+      setNewLeadSource("");
+      localStorage.setItem('customLeadSources', JSON.stringify(updated));
+    }
+  };
+
+  const addSalesperson = () => {
+    if (newSalesperson.trim() && !salespersonOptions.includes(newSalesperson.trim())) {
+      const updated = [...customSalespeople, newSalesperson.trim()];
+      setCustomSalespeople(updated);
+      setNewSalesperson("");
+      localStorage.setItem('customSalespeople', JSON.stringify(updated));
+    }
+  };
+
+  const removeLeadSource = (source: string) => {
+    const updated = customLeadSources.filter(s => s !== source);
+    setCustomLeadSources(updated);
+    localStorage.setItem('customLeadSources', JSON.stringify(updated));
+  };
+
+  const removeSalesperson = (person: string) => {
+    const updated = customSalespeople.filter(p => p !== person);
+    setCustomSalespeople(updated);
+    localStorage.setItem('customSalespeople', JSON.stringify(updated));
+  };
 
   useEffect(() => {
     setLocalClients(clients);
@@ -381,10 +439,20 @@ export function ClientTable({ clients }: ClientTableProps) {
 
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-neutral-900">Sales Opportunity Management</h2>
-        <Button onClick={handleAddClient} className="flex items-center space-x-2">
-          <Plus className="h-4 w-4" />
-          <span>Add New Opportunity</span>
-        </Button>
+        <div className="flex items-center space-x-3">
+          <Button 
+            variant="outline" 
+            onClick={() => setShowManageOptions(true)} 
+            className="flex items-center space-x-2"
+          >
+            <Settings className="h-4 w-4" />
+            <span>Manage Options</span>
+          </Button>
+          <Button onClick={handleAddClient} className="flex items-center space-x-2">
+            <Plus className="h-4 w-4" />
+            <span>Add New Opportunity</span>
+          </Button>
+        </div>
       </div>
 
       <Card>
@@ -877,6 +945,128 @@ export function ClientTable({ clients }: ClientTableProps) {
           currentContacts={localClients.find(c => c.id === selectedClientId)?.contacts || "[]"}
           onContactsUpdate={(contacts) => handleContactsUpdate(selectedClientId, contacts)}
         />
+      )}
+
+      {/* Manage Options Modal */}
+      {showManageOptions && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold">Manage Dropdown Options</h3>
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => setShowManageOptions(false)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Lead Sources Management */}
+              <div>
+                <h4 className="text-lg font-semibold mb-3">Lead Sources</h4>
+                
+                {/* Add New Lead Source */}
+                <div className="flex space-x-2 mb-4">
+                  <Input
+                    value={newLeadSource}
+                    onChange={(e) => setNewLeadSource(e.target.value)}
+                    placeholder="Add new lead source"
+                    onKeyDown={(e) => e.key === 'Enter' && addLeadSource()}
+                  />
+                  <Button onClick={addLeadSource} size="sm">
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+
+                {/* Lead Source List */}
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-gray-600">Default Options:</p>
+                  {baseLeadSourceOptions.map((source) => (
+                    <div key={source} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                      <span className="text-sm">{source}</span>
+                      <Badge variant="secondary">Default</Badge>
+                    </div>
+                  ))}
+                  
+                  {customLeadSources.length > 0 && (
+                    <>
+                      <p className="text-sm font-medium text-gray-600 mt-4">Custom Options:</p>
+                      {customLeadSources.map((source) => (
+                        <div key={source} className="flex items-center justify-between p-2 bg-blue-50 rounded">
+                          <span className="text-sm">{source}</span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeLeadSource(source)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ))}
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Salespeople Management */}
+              <div>
+                <h4 className="text-lg font-semibold mb-3">Salespeople</h4>
+                
+                {/* Add New Salesperson */}
+                <div className="flex space-x-2 mb-4">
+                  <Input
+                    value={newSalesperson}
+                    onChange={(e) => setNewSalesperson(e.target.value)}
+                    placeholder="Add new salesperson"
+                    onKeyDown={(e) => e.key === 'Enter' && addSalesperson()}
+                  />
+                  <Button onClick={addSalesperson} size="sm">
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+
+                {/* Salesperson List */}
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-gray-600">Default Options:</p>
+                  {baseSalespersonOptions.map((person) => (
+                    <div key={person} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                      <span className="text-sm">{person}</span>
+                      <Badge variant="secondary">Default</Badge>
+                    </div>
+                  ))}
+                  
+                  {customSalespeople.length > 0 && (
+                    <>
+                      <p className="text-sm font-medium text-gray-600 mt-4">Custom Options:</p>
+                      {customSalespeople.map((person) => (
+                        <div key={person} className="flex items-center justify-between p-2 bg-blue-50 rounded">
+                          <span className="text-sm">{person}</span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeSalesperson(person)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ))}
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-2 mt-6">
+              <Button variant="outline" onClick={() => setShowManageOptions(false)}>
+                Close
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
