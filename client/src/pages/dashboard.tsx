@@ -17,14 +17,25 @@ export default function Dashboard() {
     refetchInterval: 30000, // Refresh every 30 seconds
   });
 
+  const { data: availableMonths = [] } = useQuery<string[]>({
+    queryKey: ["/api/available-months"],
+    refetchInterval: 30000,
+  });
+
   const periodOptions = [
     { value: "all", label: "All Months" },
-    { value: "2024-01", label: "January 2024" },
-    { value: "2024-02", label: "February 2024" },
-    { value: "2024-03", label: "March 2024" },
-    { value: "2024-04", label: "April 2024" },
-    { value: "2024-05", label: "May 2024" },
-    { value: "2024-06", label: "June 2024" },
+    ...availableMonths.map(month => {
+      const [year, monthNum] = month.split('-');
+      const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+      ];
+      const monthName = monthNames[parseInt(monthNum) - 1];
+      return {
+        value: month,
+        label: `${monthName} ${year}`
+      };
+    })
   ];
 
   const formatCurrency = (amount: number): string => {

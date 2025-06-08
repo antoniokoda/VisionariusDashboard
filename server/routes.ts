@@ -19,6 +19,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(user);
   });
 
+  // Get available months with data
+  app.get("/api/available-months", async (req, res) => {
+    try {
+      const clients = await storage.getAllClients();
+      const monthsSet = new Set<string>();
+      
+      clients.forEach(client => {
+        if (client.createdAt) {
+          const date = new Date(client.createdAt);
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          monthsSet.add(`${year}-${month}`);
+        }
+      });
+      
+      const months = Array.from(monthsSet).sort();
+      res.json(months);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch available months" });
+    }
+  });
+
   // Get all clients
   app.get("/api/clients", async (req, res) => {
     try {
