@@ -63,15 +63,11 @@ export function ClientTable({ clients }: ClientTableProps) {
 
   // Load custom options from localStorage
   useEffect(() => {
-    const savedLeadSources = localStorage.getItem('customLeadSources');
-    const savedSalespeople = localStorage.getItem('customSalespeople');
-    
-    if (savedLeadSources) {
-      setCustomLeadSources(JSON.parse(savedLeadSources));
-    }
-    if (savedSalespeople) {
-      setCustomSalespeople(JSON.parse(savedSalespeople));
-    }
+    // Clear all custom options on component mount
+    localStorage.removeItem('customLeadSources');
+    localStorage.removeItem('customSalespeople');
+    setCustomLeadSources([]);
+    setCustomSalespeople([]);
   }, []);
 
   // Save custom options to localStorage
