@@ -8,9 +8,9 @@ interface ShowUpRatesProps {
 
 export function ShowUpRatesComponent({ showUpRates }: ShowUpRatesProps) {
   return (
-    <Card>
+    <Card className="apple-card">
       <CardHeader>
-        <CardTitle>Show-Up Rates</CardTitle>
+        <CardTitle className="text-gray-900">Show-Up Rates</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

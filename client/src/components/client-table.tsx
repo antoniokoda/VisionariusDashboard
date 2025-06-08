@@ -188,7 +188,7 @@ export function ClientTable({ clients }: ClientTableProps) {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-neutral-900">Sales Opportunity Management</h2>
+        <h2 className="text-2xl font-bold text-gray-900">Sales Opportunity Management</h2>
         <Button onClick={handleAddClient} className="flex items-center space-x-2 bg-gray-900 text-white hover:bg-gray-800">
           <Plus className="h-4 w-4" />
           <span>Add New Opportunity</span>
@@ -235,7 +235,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                           value={client.name}
                           onChange={(e) => handleUpdateClient(client.id, "name", e.target.value)}
                           placeholder="Enter client name..."
-                          className="w-full min-h-[40px] max-h-[80px] border-none bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none overflow-hidden text-sm"
+                          className="w-full min-h-[40px] max-h-[80px] border-none bg-transparent focus:outline-none focus:ring-2 focus:ring-gray-300 resize-none overflow-hidden text-sm text-gray-900"
                           style={{ 
                             height: 'auto',
                             minHeight: '40px'
@@ -247,7 +247,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                           }}
                         />
                         {saveFeedback[client.id] && (
-                          <div className="text-xs text-green-600 mt-1 flex items-center">
+                          <div className="text-xs text-gray-700 mt-1 flex items-center">
                             <Check className="h-3 w-3 mr-1" />
                             Saved
                           </div>
