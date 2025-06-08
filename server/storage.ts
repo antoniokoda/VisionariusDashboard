@@ -1,10 +1,11 @@
-import { clients, type Client, type InsertClient, type UpdateClient, type User, type InsertUser } from "@shared/schema";
+import { clients, users, type Client, type InsertClient, type UpdateClient, type User, type UpsertUser } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
-  // User methods
-  getUser(id: number): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  // User methods (Replit Auth)
+  getUser(id: string): Promise<User | undefined>;
+  upsertUser(user: UpsertUser): Promise<User>;
   
   // Client methods
   getAllClients(): Promise<Client[]>;
