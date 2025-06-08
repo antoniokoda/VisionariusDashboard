@@ -31,11 +31,11 @@ function Header() {
           <nav className="flex space-x-2">
             <Link href="/">
               <Button
-                variant={location === "/" ? "default" : "ghost"}
-                className={`apple-button flex items-center space-x-2.5 px-4 py-2.5 rounded-xl text-body font-medium ${
+                variant="ghost"
+                className={`apple-button flex items-center space-x-2.5 px-4 py-2.5 rounded-xl text-body font-medium transition-all duration-300 ${
                   location === "/" 
                     ? "bg-gray-900 text-white shadow-apple" 
-                    : "text-gray-700 hover:bg-gray-100"
+                    : "text-gray-700 hover:-translate-y-1 hover:shadow-apple"
                 }`}
               >
                 <BarChart3 className="h-4 w-4" />
@@ -44,11 +44,11 @@ function Header() {
             </Link>
             <Link href="/data-entry">
               <Button
-                variant={location === "/data-entry" ? "default" : "ghost"}
-                className={`apple-button flex items-center space-x-2.5 px-4 py-2.5 rounded-xl text-body font-medium ${
+                variant="ghost"
+                className={`apple-button flex items-center space-x-2.5 px-4 py-2.5 rounded-xl text-body font-medium transition-all duration-300 ${
                   location === "/data-entry" 
                     ? "bg-gray-900 text-white shadow-apple" 
-                    : "text-gray-700 hover:bg-gray-100"
+                    : "text-gray-700 hover:-translate-y-1 hover:shadow-apple"
                 }`}
               >
                 <Table className="h-4 w-4" />
@@ -57,11 +57,11 @@ function Header() {
             </Link>
             <Link href="/calendar">
               <Button
-                variant={location === "/calendar" ? "default" : "ghost"}
-                className={`apple-button flex items-center space-x-2.5 px-4 py-2.5 rounded-xl text-body font-medium ${
+                variant="ghost"
+                className={`apple-button flex items-center space-x-2.5 px-4 py-2.5 rounded-xl text-body font-medium transition-all duration-300 ${
                   location === "/calendar" 
                     ? "bg-gray-900 text-white shadow-apple" 
-                    : "text-gray-700 hover:bg-gray-100"
+                    : "text-gray-700 hover:-translate-y-1 hover:shadow-apple"
                 }`}
               >
                 <CalendarIcon className="h-4 w-4" />

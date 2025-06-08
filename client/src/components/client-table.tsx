@@ -189,7 +189,7 @@ export function ClientTable({ clients }: ClientTableProps) {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-neutral-900">Sales Opportunity Management</h2>
-        <Button onClick={handleAddClient} className="flex items-center space-x-2">
+        <Button onClick={handleAddClient} className="flex items-center space-x-2 bg-gray-900 text-white hover:bg-gray-800">
           <Plus className="h-4 w-4" />
           <span>Add New Opportunity</span>
         </Button>
@@ -201,19 +201,19 @@ export function ClientTable({ clients }: ClientTableProps) {
             <table className="w-full">
               <thead className="bg-gray-50 border-b">
                 <tr>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-40">Sales Opportunity</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Discovery 1</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Discovery 2</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Discovery 3</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Closing 1</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Closing 2</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Closing 3</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-24">Proposal</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Revenue</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Cash Collected</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-24">Deal Status</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-20">Files</th>
-                  <th className="text-left py-4 px-4 font-medium text-neutral-700 text-sm w-32">Actions</th>
+                  <th className="text-left py-4 px-4 font-medium text-gray-900 text-sm w-40">Sales Opportunity</th>
+                  <th className="text-left py-4 px-4 font-medium text-gray-900 text-sm w-32">Discovery 1</th>
+                  <th className="text-left py-4 px-4 font-medium text-gray-900 text-sm w-32">Discovery 2</th>
+                  <th className="text-left py-4 px-4 font-medium text-gray-900 text-sm w-32">Discovery 3</th>
+                  <th className="text-left py-4 px-4 font-medium text-gray-900 text-sm w-32">Closing 1</th>
+                  <th className="text-left py-4 px-4 font-medium text-gray-900 text-sm w-32">Closing 2</th>
+                  <th className="text-left py-4 px-4 font-medium text-gray-900 text-sm w-32">Closing 3</th>
+                  <th className="text-left py-4 px-4 font-medium text-gray-900 text-sm w-24">Proposal</th>
+                  <th className="text-left py-4 px-4 font-medium text-gray-900 text-sm w-32">Revenue</th>
+                  <th className="text-left py-4 px-4 font-medium text-gray-900 text-sm w-32">Cash Collected</th>
+                  <th className="text-left py-4 px-4 font-medium text-gray-900 text-sm w-24">Deal Status</th>
+                  <th className="text-left py-4 px-4 font-medium text-gray-900 text-sm w-20">Files</th>
+                  <th className="text-left py-4 px-4 font-medium text-gray-900 text-sm w-32">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -222,10 +222,10 @@ export function ClientTable({ clients }: ClientTableProps) {
                     key={client.id} 
                     data-client-id={client.id}
                     className={`
-                      border-b transition-all duration-500
+                      border-b transition-all duration-500 ease-out
                       ${highlightedClientId === client.id 
-                        ? 'bg-blue-100 border-blue-300 shadow-md' 
-                        : 'hover:bg-gray-50'
+                        ? 'bg-gray-200 border-gray-400 shadow-lg transform scale-[1.01]' 
+                        : 'hover:bg-gray-100 hover:shadow-md hover:transform hover:scale-[1.005]'
                       }
                     `}
                   >

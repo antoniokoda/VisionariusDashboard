@@ -24,25 +24,25 @@ export function ShowUpRatesComponent({ showUpRates }: ShowUpRatesProps) {
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm text-neutral-700">First Discovery</span>
-                  <span className="text-sm font-medium text-green-600">{showUpRates.firstDiscovery}%</span>
+                  <span className="text-sm font-medium text-gray-900">{showUpRates.firstDiscovery}%</span>
                 </div>
-                <Progress value={showUpRates.firstDiscovery} className="h-2" />
+                <Progress value={showUpRates.firstDiscovery} className="h-2 [&>div]:bg-gray-900" />
               </div>
 
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm text-neutral-700">Second Discovery</span>
-                  <span className="text-sm font-medium text-green-600">{showUpRates.secondDiscovery}%</span>
+                  <span className="text-sm font-medium text-gray-900">{showUpRates.secondDiscovery}%</span>
                 </div>
-                <Progress value={showUpRates.secondDiscovery} className="h-2" />
+                <Progress value={showUpRates.secondDiscovery} className="h-2 [&>div]:bg-gray-900" />
               </div>
 
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm text-neutral-700">Third Discovery</span>
-                  <span className="text-sm font-medium text-green-600">{showUpRates.thirdDiscovery}%</span>
+                  <span className="text-sm font-medium text-gray-900">{showUpRates.thirdDiscovery}%</span>
                 </div>
-                <Progress value={showUpRates.thirdDiscovery} className="h-2" />
+                <Progress value={showUpRates.thirdDiscovery} className="h-2 [&>div]:bg-gray-900" />
               </div>
             </div>
           </div>
@@ -57,25 +57,25 @@ export function ShowUpRatesComponent({ showUpRates }: ShowUpRatesProps) {
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm text-neutral-700">First Closing</span>
-                  <span className="text-sm font-medium text-blue-600">{showUpRates.firstClosing}%</span>
+                  <span className="text-sm font-medium text-gray-900">{showUpRates.firstClosing}%</span>
                 </div>
-                <Progress value={showUpRates.firstClosing} className="h-2" />
+                <Progress value={showUpRates.firstClosing} className="h-2 [&>div]:bg-gray-900" />
               </div>
 
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm text-neutral-700">Second Closing</span>
-                  <span className="text-sm font-medium text-blue-600">{showUpRates.secondClosing}%</span>
+                  <span className="text-sm font-medium text-gray-900">{showUpRates.secondClosing}%</span>
                 </div>
-                <Progress value={showUpRates.secondClosing} className="h-2" />
+                <Progress value={showUpRates.secondClosing} className="h-2 [&>div]:bg-gray-900" />
               </div>
 
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm text-neutral-700">Third Closing</span>
-                  <span className="text-sm font-medium text-blue-600">{showUpRates.thirdClosing}%</span>
+                  <span className="text-sm font-medium text-gray-900">{showUpRates.thirdClosing}%</span>
                 </div>
-                <Progress value={showUpRates.thirdClosing} className="h-2" />
+                <Progress value={showUpRates.thirdClosing} className="h-2 [&>div]:bg-gray-900" />
               </div>
             </div>
           </div>

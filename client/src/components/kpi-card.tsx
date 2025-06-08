@@ -50,7 +50,7 @@ export function KPICard({
   return (
     <Card className="kpi-card apple-card border-gray-300 bg-card/80 backdrop-blur-sm hover:bg-card/90 transition-all duration-300 hover:shadow-apple-lg">
       <CardContent className="p-6">
-        <div className="flex items-start gap-4">
+        <div className="flex items-center gap-4">
           <div className={`w-12 h-12 rounded-2xl ${iconColor} flex items-center justify-center flex-shrink-0 shadow-apple`}>
             <Icon className="w-6 h-6 text-white" />
           </div>
