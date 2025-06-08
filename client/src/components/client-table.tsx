@@ -776,7 +776,7 @@ export function ClientTable({ clients }: ClientTableProps) {
                         </Button>
                       </div>
                     </td>
-                  </tr>
+                        </tr>
                     ))}
                   </React.Fragment>
                 ))}
