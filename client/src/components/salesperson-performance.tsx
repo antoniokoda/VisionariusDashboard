@@ -44,12 +44,12 @@ export function SalespersonPerformanceComponent({ data, onSalespersonFilter, cur
       </CardHeader>
       <CardContent>
         <div className="mb-4">
-          <Select value={currentFilter || ""} onValueChange={onSalespersonFilter}>
+          <Select value={currentFilter || "all"} onValueChange={(value) => onSalespersonFilter(value === "all" ? "" : value)}>
             <SelectTrigger className="w-48">
               <SelectValue placeholder="Filter by salesperson" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Salespeople</SelectItem>
+              <SelectItem value="all">All Salespeople</SelectItem>
               {data.map((person) => (
                 <SelectItem key={person.name} value={person.name}>
                   {person.name}

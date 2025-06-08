@@ -1,4 +1,4 @@
-import { type Client, type KPIData, type ShowUpRates, type FunnelData, type TimeMetrics, type CallMetrics } from "@shared/schema";
+import { type Client, type KPIData, type ShowUpRates, type FunnelData, type TimeMetrics, type CallMetrics, type TrendData, type LeadSourceData, type SalespersonPerformance } from "@shared/schema";
 
 export function calculateKPIs(clients: Client[], previousMonthClients?: Client[]): KPIData {
   const totalRevenue = clients.reduce((sum, client) => {

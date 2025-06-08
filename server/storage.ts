@@ -171,6 +171,8 @@ export class MemStorage implements IStorage {
       files: insertClient.files || "[]",
       notes: insertClient.notes || null,
       conversation: insertClient.conversation || "[]",
+      leadSource: insertClient.leadSource || null,
+      salesperson: insertClient.salesperson || null,
       createdAt: new Date().toISOString().split('T')[0],
     };
     this.clients.set(id, client);
