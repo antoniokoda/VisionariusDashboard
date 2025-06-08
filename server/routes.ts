@@ -3,24 +3,27 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertClientSchema, updateClientSchema, type DashboardData, type CalendarEvent, type Client } from "@shared/schema";
 import { calculateKPIs, calculateShowUpRates, calculateFunnelData, calculateTimeMetrics, calculateCallMetrics, calculateTrendData, calculateLeadSources, calculateSalespersonPerformance } from "../client/src/lib/calculations";
+import { setupAuth, isAuthenticated } from "./replitAuth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
+  // Set up Replit Auth middleware
+  await setupAuth(app);
+
   // Authentication routes
-  app.get('/api/auth/user', async (req, res) => {
-    // For now, return a mock user - in production this would check session/JWT
-    const user = {
-      id: 1,
-      username: 'admin',
-      email: 'admin@visionarius.com',
-      firstName: 'Admin',
-      lastName: 'User'
-    };
-    res.json(user);
+  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
   });
 
   // Get available months with data
-  app.get("/api/available-months", async (req, res) => {
+  app.get("/api/available-months", isAuthenticated, async (req, res) => {
     try {
       const clients = await storage.getAllClients();
       const monthsSet = new Set<string>();
