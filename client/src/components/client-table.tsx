@@ -77,10 +77,24 @@ export function ClientTable({ clients }: ClientTableProps) {
       const response = await apiRequest("POST", "/api/clients", client);
       return response.json();
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/clients"] });
+    onSuccess: (newClient) => {
+      // Add new client to cache immediately for instant UI update
+      queryClient.setQueryData(["/api/clients"], (oldData: Client[] | undefined) => {
+        if (!oldData) return [newClient];
+        return [...oldData, newClient];
+      });
+      
+      // Update local state immediately
+      setLocalClients(prev => [...prev, newClient]);
+      
+      // Invalidate dependent queries
       queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
       queryClient.invalidateQueries({ queryKey: ["/api/calendar"] });
+      
+      // Invalidate current month data
+      const now = new Date();
+      const monthKey = `/api/clients/month/${now.getFullYear()}/${now.getMonth() + 1}`;
+      queryClient.invalidateQueries({ queryKey: [monthKey] });
     },
   });
 
@@ -110,11 +124,26 @@ export function ClientTable({ clients }: ClientTableProps) {
   const deleteClientMutation = useMutation({
     mutationFn: async (id: number) => {
       await apiRequest("DELETE", `/api/clients/${id}`);
+      return id;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/clients"] });
+    onSuccess: (deletedId) => {
+      // Remove client from cache immediately for instant UI update
+      queryClient.setQueryData(["/api/clients"], (oldData: Client[] | undefined) => {
+        if (!oldData) return oldData;
+        return oldData.filter(client => client.id !== deletedId);
+      });
+      
+      // Update local state immediately
+      setLocalClients(prev => prev.filter(client => client.id !== deletedId));
+      
+      // Invalidate dependent queries
       queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
       queryClient.invalidateQueries({ queryKey: ["/api/calendar"] });
+      
+      // Invalidate current month data
+      const now = new Date();
+      const monthKey = `/api/clients/month/${now.getFullYear()}/${now.getMonth() + 1}`;
+      queryClient.invalidateQueries({ queryKey: [monthKey] });
     },
   });
 

@@ -13,7 +13,6 @@ export default function Calendar() {
 
   const { data: allEvents, isLoading } = useQuery<CalendarEvent[]>({
     queryKey: ["/api/calendar"],
-    refetchInterval: 30000,
   });
 
   // Filter events for the current month
@@ -29,7 +28,6 @@ export default function Calendar() {
   
   const { data: monthlyClients } = useQuery<Client[]>({
     queryKey: [`/api/clients/month/${currentYear}/${currentMonth}`],
-    refetchInterval: 30000,
   });
 
   // Ensure monthlyClients is always an array for safe operations
