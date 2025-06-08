@@ -66,11 +66,17 @@ export type UpdateClient = z.infer<typeof updateClientSchema>;
 // KPI calculation types
 export interface KPIData {
   cashCollected: number;
+  cashCollectedChange?: number;
   closingRate: number;
+  closingRateChange?: number;
   proposalsPitched: number;
+  proposalsPitchedChange?: number;
   avgSalesCycle: number;
+  avgSalesCycleChange?: number;
   totalCalls: number;
+  totalCallsChange?: number;
   avgDealSize: number;
+  avgDealSizeChange?: number;
 }
 
 export interface ShowUpRates {

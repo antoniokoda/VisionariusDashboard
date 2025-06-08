@@ -2,7 +2,7 @@ import { useState, useCallback, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { FileText, Upload, Trash2, X } from "lucide-react";
+import { FileText, Upload, Trash2, X, ExternalLink, Download, Eye } from "lucide-react";
 
 interface FileUploadModalProps {
   isOpen: boolean;
@@ -39,10 +39,45 @@ export function FileUploadModal({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files;
     if (selectedFiles) {
-      const fileNames = Array.from(selectedFiles).map(file => file.name);
-      const updatedFiles = [...files, ...fileNames];
+      // Create file objects with metadata for proper handling
+      const fileObjects = Array.from(selectedFiles).map(file => ({
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        url: URL.createObjectURL(file),
+        isLocal: true
+      }));
+      
+      const fileEntries = fileObjects.map(f => JSON.stringify(f));
+      const updatedFiles = [...files, ...fileEntries];
       setFiles(updatedFiles);
       onFilesUpdate(updatedFiles);
+    }
+  };
+
+  const getFileInfo = (fileEntry: string) => {
+    try {
+      return JSON.parse(fileEntry);
+    } catch {
+      // Legacy format - just a string
+      return { name: fileEntry, isLocal: false, url: fileEntry };
+    }
+  };
+
+  const handleViewFile = (fileEntry: string) => {
+    const fileInfo = getFileInfo(fileEntry);
+    if (fileInfo.url) {
+      window.open(fileInfo.url, '_blank');
+    }
+  };
+
+  const handleDownloadFile = (fileEntry: string) => {
+    const fileInfo = getFileInfo(fileEntry);
+    if (fileInfo.url) {
+      const link = document.createElement('a');
+      link.href = fileInfo.url;
+      link.download = fileInfo.name || 'download';
+      link.click();
     }
   };
 
@@ -134,24 +169,55 @@ export function FileUploadModal({
               <p className="text-sm text-neutral-500 text-center py-4">No files uploaded</p>
             ) : (
               <div className="space-y-2 max-h-40 overflow-y-auto">
-                {files.map((file, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <FileText className="h-4 w-4 text-blue-500" />
-                      <span className="text-sm text-neutral-700 truncate max-w-[200px]">
-                        {file}
-                      </span>
+                {files.map((file, index) => {
+                  const fileInfo = getFileInfo(file);
+                  return (
+                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <FileText className="h-4 w-4 text-blue-500" />
+                        <div className="flex flex-col">
+                          <span className="text-sm text-neutral-700 truncate max-w-[200px]">
+                            {fileInfo.name}
+                          </span>
+                          {fileInfo.size && (
+                            <span className="text-xs text-neutral-500">
+                              {(fileInfo.size / 1024).toFixed(1)} KB
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleViewFile(file)}
+                          className="text-blue-500 hover:text-blue-700 h-8 w-8"
+                          title="View file"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDownloadFile(file)}
+                          className="text-green-500 hover:text-green-700 h-8 w-8"
+                          title="Download file"
+                        >
+                          <Download className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleRemoveFile(index)}
+                          className="text-red-500 hover:text-red-700 h-8 w-8"
+                          title="Delete file"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleRemoveFile(index)}
-                      className="text-red-500 hover:text-red-700 h-8 w-8"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
